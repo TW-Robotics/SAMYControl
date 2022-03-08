@@ -1,0 +1,6 @@
+{   'categorical': [],
+    'category_names': {},
+    'max': None,
+    'min': None,
+    'step_size': None,
+    'variables': ['x[0]', 'x[1]']}

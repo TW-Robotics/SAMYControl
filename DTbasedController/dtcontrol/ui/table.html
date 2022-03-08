@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript">
+        {{jquery_js}}
+    </script>
+    <style>
+        {{ bootstrap_css }}
+    </style>
+    <script type="text/javascript">
+        {{ bootstrap_js }}
+    </script>
+    <style>
+        {{ bootstrap_toggle_css }}
+    </style>
+    <script type="text/javascript">
+        {{ bootstrap_toggle_js }}
+    </script>
+    <style>
+        {{ style_css }}
+    </style>
+    <script type="text/javascript">
+        {{script_js}}
+    </script>
+    <title>Benchmark results</title>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row mt-4 text-center">
+        <div class="col-sm-6 col-md-4 offset-md-2 col-lg-3 offset-lg-3 col-xl-2 offset-xl-4">
+            <label for="lastResultsToggle">Show only results from last run:</label>
+            <br>
+            <input type="checkbox" data-toggle="toggle" id="lastResultsToggle" data-width="100">
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <label for="smallTextToggle">Small text:</label>
+            <br>
+            <input type="checkbox" data-toggle="toggle" id="smallTextToggle" data-width="100">
+        </div>
+    </div>
+    <table class="table table-bordered table-hover mt-4" id="table">
+        <caption><span class="code">#(s,a)</span> refers to the number of state-action pairs (or state-input pairs).
+            <span class="code">#doc</span> refers to the size of
+            the domain of controller.
+        </caption>
+        <thead>
+        <tr>
+            <td></td>
+            {% for c in column_names %}
+                <th scope="col"
+                    style="text-align: center; vertical-align: middle; max-width: 200px; word-wrap:break-word;"
+                        {% if c not in last_run_classifiers %}
+                    class="not_last_run"
+                        {% endif %}
+                >
+                    {{ c }}
+                </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in range(row_metadata|length) %}
+            {% set r = row_metadata[i]["name"] %}
+            {% set n_sa = row_metadata[i]["state_action_pairs"] %}
+            {% set n_doc = row_metadata[i]["domain_of_controller"] %}
+            <tr>
+                <th scope="row"
+                    style="text-align:center; vertical-align: middle"
+                        {% if r not in last_run_datasets %}
+                    class="not_last_run"
+                        {% endif %}
+                >
+                    {{ r }}
+                    <br/>
+                    <span style="font-weight: normal">
+                        <span class="code">#(s,a)</span>: {{ n_sa }}
+                        <br/>
+                        <span class="code">#doc</span>: {{ n_doc }}
+                    </span>
+                </th>
+                {% for j in range(table[i]|length) %}
+                    {% set not_last_run = r not in last_run_datasets or column_names[j] not in last_run_classifiers %}
+                    {% set cell = table[i][j] %}
+                    {% set links = links_table[i][j] %}
+                    {% if cell is string %}
+                        <td class="{{ 'not_last_run' if not_last_run else '' }}
+                                    {{ 'text-danger' if cell == 'timeout' or cell=='failed to fit' else '' }}"
+                            style="text-align: center;
+                                    vertical-align: middle
+                                    {{ '; opacity: 0.5' if cell == 'not applicable' or cell == 'not yet computed' else '' }};"
+                        >
+                            <span>{{ cell }}</span>
+                        </td>
+                    {% else %}
+                        <td class="{{ 'not_last_run' if not_last_run else '' }}"
+                            style="text-align: center{{ ';background-color:#ff5733' if 'accuracy' in cell else '' }}; vertical-align: middle">
+                            {% for k,v in cell['stats'].items() %}
+                                {{ k }}: {{ v }}<br>
+                            {% endfor %}
+                            {% if 'accuracy' in cell %}
+                                accuracy: {{ cell['accuracy'] }}<br>
+                            {% endif %}
+                            {% if 'time' in cell %}
+                                <span class="time">time: {{ cell['time'] }}<br></span>
+                            {% endif %}
+                            {% if 'dot_link' in links %}
+                                <a href="{{ links['dot_link'] }}" target="_blank">DOT</a> /
+                            {% endif %}
+                            {% if 'c_link' in links %}
+                                <a href="{{ links['c_link'] }}" target="_blank">C</a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="spinner">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

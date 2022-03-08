@@ -1,0 +1,28 @@
+digraph {
+0 [label="-0.07688932653759994*clock\n+2.469416111905296*state\n-9.543779739790267 <= 0"];
+1 [label="0.506205994256847*clock\n-67.23556195770792*state\n+10.61441550212217 <= 0"];
+2 [label="state <= 5.5"];
+3 [label="move"];
+2 -> 3 [label="True"];
+4 [label="28.180461300703747*clock\n+1.272006324851469*state\n-3066.078891041682 <= 0"];
+5 [label="time"];
+4 -> 5 [label="True"];
+6 [label="move"];
+4 -> 6 [style="dashed", label="False"];
+2 -> 4 [style="dashed", label="False"];
+1 -> 2 [label="True"];
+7 [label="round"];
+1 -> 7 [style="dashed", label="False"];
+0 -> 1 [label="True"];
+8 [label="clock <= 108.5"];
+9 [label="24.08660690747304*clock\n-1059.9956410571963*state\n+4686.023717296558 <= 0"];
+10 [label="time"];
+9 -> 10 [label="True"];
+11 [label="move"];
+9 -> 11 [style="dashed", label="False"];
+8 -> 9 [label="True"];
+12 [label="move"];
+8 -> 12 [style="dashed", label="False"];
+0 -> 8 [style="dashed", label="False"];
+
+}

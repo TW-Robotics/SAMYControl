@@ -1,0 +1,38 @@
+digraph {
+0 [label="state"];
+1 [label="round"];
+0 -> 1 [label="start_start"];
+2 [label="move"];
+0 -> 2 [label="fast_start"];
+3 [label="move"];
+0 -> 3 [label="start_fast"];
+4 [label="move"];
+0 -> 4 [label="start_slow"];
+5 [label="move"];
+0 -> 5 [label="slow_start"];
+6 [label="clock <= 25.5"];
+7 [label="time"];
+6 -> 7 [label="True"];
+8 [label="move"];
+6 -> 8 [style="dashed", label="False"];
+0 -> 6 [label="fast_fast"];
+9 [label="clock <= 108.5"];
+10 [label="time"];
+9 -> 10 [label="True"];
+11 [label="move"];
+9 -> 11 [style="dashed", label="False"];
+0 -> 9 [label="fast_slow"];
+12 [label="clock <= 108.5"];
+13 [label="time"];
+12 -> 13 [label="True"];
+14 [label="move"];
+12 -> 14 [style="dashed", label="False"];
+0 -> 12 [label="slow_fast"];
+15 [label="clock <= 108.5"];
+16 [label="time"];
+15 -> 16 [label="True"];
+17 [label="move"];
+15 -> 17 [style="dashed", label="False"];
+0 -> 15 [label="slow_slow"];
+
+}

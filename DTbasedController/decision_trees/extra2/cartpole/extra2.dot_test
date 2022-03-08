@@ -1,0 +1,24 @@
+digraph {
+0 [label="x[0] <= 3.16"];
+1 [label="x[1] <= 0.75"];
+2 [label="x[1] <= -0.45"];
+3 [label="2.7"];
+2 -> 3 [label="True"];
+4 [label="x[1] <= 0.15"];
+5 [label="3.9"];
+4 -> 5 [label="True"];
+6 [label="0.0"];
+4 -> 6 [style="dashed", label="False"];
+2 -> 4 [style="dashed", label="False"];
+1 -> 2 [label="True"];
+7 [label="-2.2"];
+1 -> 7 [style="dashed", label="False"];
+0 -> 1 [label="True"];
+8 [label="x[1] <= -0.75"];
+9 [label="2.2"];
+8 -> 9 [label="True"];
+10 [label="-3.8"];
+8 -> 10 [style="dashed", label="False"];
+0 -> 8 [style="dashed", label="False"];
+
+}

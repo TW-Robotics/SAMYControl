@@ -1,0 +1,91 @@
+
+Notation for labels:
+
+- Categorical labels: either integer number or words surrounded by ''
+
+- Numerical labels: floats (with point!). For example 1.0, 2.4354, etc.
+
+- Multioutout actions (aka controller with multiple input): ( , , , ... )
+Multiouput labels can be divided using \n. Nevertheless, do not add a coma after an element if you separate elements with \n within a tuple!!!
+Example: (0, 1, 7.45 \n  'PickAndPlace', 'Part1' \n 'None', 'None')
+
+- Undetermined action: [ , , ]
+Similarly to multioutput labels, can be divided using \n. Nevertheless, do not add a coma after an element if you separate elements with \n within an array!!!
+Example: [2.2, 2.3, 2.4, 2.5, 2.6\n2.7, 2.8, 2.9, 3.0, 3.1\n3.2, 3.3, 3.4, 3.5, 3.6\n3.7, 3.8, 3.9, 4.0]
+
+- Categorical Groups: { Category1, Category2, ... }
+Here you can place \n between elements, but still you need a coma!!! (Unlike the previous cases). Not my fault, the original dtControl handles the cases like this, so I adapt to it so we can use dtControl output directly as Input for our controllers.
+Example: {Halted,\nSuspended,\nRunning}
+
+
+Predicates as labels in dot file:
+- AxisAligned predicates: variables <= numericaValue. 
+Example: x[1] <= 54.12 . Spacing is important!!!
+
+- Hyperplanes: coef1*var1\n-coef2*var2\n+...\n+interception <= 0 ( wTx+b <= 0 )   SPACING AND \n ARE RELEVANT!!!!!!!!!
+Example: -50.70809704629042*x[0]\n-204.92693242234685*x[1]\n-16.252595803286038 <= 0
+
+- Categorical Single Label: variables == value
+Example: var1 == 1   or   state == fast_fast
+
+
+- Categorical MultiLabel: variable in node label, each(different) possible value in the edge labels. Categories can be grouped using { Category1, Category2, ... }
+Example (not grouped, hence each category has a branch):
+    camaraDetector_2 -> action4_Part1 [label="Part1"]
+    camaraDetector_2 -> action4_Part2 [label="Part2"]
+    camaraDetector_2 -> action4_Part3 [label="Part3"]
+
+or grouped (all the categories in the group follow the same branch)
+
+    robot2CurrentState -> action6 [label="{Halted,\nSuspended,\nRunning}"]
+
+
+Example of valid file (more examples in the folder decision_trees)
+
+strict digraph {
+    action1  [ label="[(1, 0, 0 \n 'None', 'None' \n 'None', 'None'), (0, 1, 0 \n  'None', 'None' \n 'PickAndPlace', 'Part1' ), (0, 1, 0 \n  'None', 'None' \n 'PickAndPlace', 'Part1' )]"]
+    action2  [ label="(0, 1, 0 \n 'None', 'None' \n 'None', 'None')"]
+    action3  [ label="(0, 1, 1 \n 'None', 'None' \n 'None', 'None')"]
+    action4_Part1 [label="(0, 1, 0 \n  'PickAndPlace', 'Part1' \n 'None', 'None')"]
+    action4_Part2 [label="(0, 1, 0 \n  'PickAndPlace', 'Part2' \n 'None', 'None')"]
+    action4_Part3 [label="(0, 1, 0 \n  'PickAndPlace', 'Part3' \n 'None', 'None')"]
+    action5_Part1 [label="(0, 1, 0 \n  'None', 'None' \n 'PickAndPlace', 'Part1' )"]
+    action5_Part2 [label="(0, 1, 0 \n  'None', 'None' \n 'PickAndPlace',  'Part2')"]
+    action5_Part3 [label="(0, 1, 0 \n  'None', 'None' \n 'PickAndPlace', 'Part3' )"]
+    action6 [label="(0, 0, 0 \n 'None', 'None' \n 'None', 'None')"]
+
+
+    lightBarrierSensor [label="LightBarrierSensor == Detection"]
+    cylinderState [label="Cylinder_CurrentState"]
+    camaraDetector_1 [label="CamaraDetection"]
+    camaraDetector_2 [label="CamaraDetection"]
+    camaraDetector_3 [label="CamaraDetection"]
+    robot1CurrentState [label="Robot1_CurrentState"]
+    robot2CurrentState [label="Robot2_CurrentState"]
+
+
+    
+    
+    lightBarrierSensor -> action1 [ label="False"]
+    lightBarrierSensor -> cylinderState [ label="True"]
+    cylinderState -> action2 [label="{Halted,\nSuspended,\nReady}"]
+    cylinderState -> camaraDetector_1 [label="Running"]
+
+    camaraDetector_1 -> action3 [label = "'None'"]
+    camaraDetector_1 -> robot1CurrentState [label = "{Part1,\nPart2,\nPart3}"]
+
+    robot1CurrentState -> camaraDetector_2 [label="Ready"]
+    camaraDetector_2 -> action4_Part1 [label="Part1"]
+    camaraDetector_2 -> action4_Part2 [label="Part2"]
+    camaraDetector_2 -> action4_Part3 [label="Part3"]
+
+    robot1CurrentState -> robot2CurrentState [label="{Halted,\nSuspended,\nRunning}"]
+    robot2CurrentState -> camaraDetector_3 [label="Ready"]
+    camaraDetector_3 -> action5_Part1 [label="Part1"]
+    camaraDetector_3 -> action5_Part2 [label="Part2"]
+    camaraDetector_3 -> action5_Part3 [label="Part3"]
+
+    robot2CurrentState -> action6 [label="{Halted,\nSuspended,\nRunning}"]
+
+}
+

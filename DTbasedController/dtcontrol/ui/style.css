@@ -1,0 +1,31 @@
+table {
+  /* font-size: smaller; */
+}
+
+thead > tr > th {
+  text-align: center;
+  text-wrap: normal;
+}
+
+tbody > tr > th {
+  text-align: left;
+  text-wrap: normal;
+}
+
+.time {
+  color: #ecc30b;
+}
+
+.code {
+  font-family: monospace;
+}
+
+#spinner {
+    display: none;
+    position: fixed;
+    z-index: 1031;
+    top: 50%;
+    right: 50%; /* or: left: 50%; */
+    margin-top: -1.5rem; /* have of the elements height */
+    margin-right: -1.5rem; /* have of the elements widht */
+}

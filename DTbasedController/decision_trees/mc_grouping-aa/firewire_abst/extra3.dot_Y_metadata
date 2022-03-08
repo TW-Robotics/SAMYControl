@@ -1,0 +1,8 @@
+{   'categorical': [0],
+    'category_names': {0: ['round', 'move', 'time']},
+    'max': None,
+    'min': None,
+    'num_flattened': None,
+    'num_rows': None,
+    'step_size': None,
+    'variables': ['u_0_cat']}

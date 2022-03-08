@@ -1,0 +1,10 @@
+{   'categorical': [0],
+    'category_names': {   0: [   'start_start',
+                                 'fast_slow',
+                                 'slow_fast',
+                                 'slow_slow',
+                                 'fast_fast']},
+    'max': None,
+    'min': None,
+    'step_size': None,
+    'variables': ['state', 'clock']}

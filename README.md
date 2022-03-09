@@ -22,7 +22,7 @@ The XXXXXbasedController receives the system state from the SAMYControlInterface
 The SAMYControlInterface passes the new system state automatically to the XXXXXbasedController every time the system state changes, and every time expects to get a Standard System-Action as response. 
 
 ## SAMYControllerBase
-All the controllers that use the SAMYControllerBase should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used by the XXXXXbasedController controller.
+All the controllers that use the SAMYControllerBase should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation.
 
 ### Control
 Briefly stated, controlling a system consists in given the current state of the system, select the actions to be performed in order to reach the goal state. I will refer to the step performed by a controller for going from a system state to a system-action as a "prediction". 

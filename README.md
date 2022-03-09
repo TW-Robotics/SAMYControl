@@ -46,13 +46,17 @@ The pattern in the controllers enforced by this class is very simple:
 flowchart LR
   subgraph Controller
 	subgraph standardStateToInternalState
+	    subgraph AAAA
+	    end
 	end
-      subgraph Predict
+        subgraph Predict
             subgraph XXXXX
 	    end
+        end
 	subgraph internalSystemActionToStandardSystemAction
-	end
-      end
+	    subgraph WWWW
+	    end
+        end
   end
   A[Standard System State] --> standardStateToInternalState
   standardStateToInternalState -- internal system state representation --> Predict

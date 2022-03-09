@@ -44,9 +44,9 @@ As previously stated, all the controllers that use the SAMYControlInterface (XXX
 The pattern in the controllers enforced by this class is very simple:
 ```mermaid
 flowchart LR
-  subgraph Controller
+  subgraph XXXXXbasedController
 	subgraph standardStateToInternalState
-	    subgraph AA
+	    subgraph   
 	    end
 	end
         subgraph Predict
@@ -54,7 +54,7 @@ flowchart LR
 	    end
         end
 	subgraph internalSystemActionToStandardSystemAction
-	    subgraph BB
+	    subgraph   
 	    end
         end
   end

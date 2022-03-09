@@ -26,6 +26,11 @@ All the controllers that use the SAMYControllerBase should inherit from SAMYCont
 
 ### Control
 Briefly stated, controlling a system consists in given the current state of the system, select the actions to be performed in order to reach the goal state. I will refer to the step performed by a controller for going from a system state to a system-action as a "prediction". 
+Control loop:
+A(Controller) -- Action --> B(System)
+B -- State --> A
+where the selection of actions should lead eventually to the desired goal state of the system.
+
 This prediction takes place in an internal representation of states and system-actions depending on the type of XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.
 

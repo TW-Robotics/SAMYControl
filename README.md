@@ -36,7 +36,6 @@ where the selection of actions should lead eventually to the desired goal state 
 
 ```mermaid
 flowchart LR
-flowchart LR
   subgraph TOP
     direction TB
     subgraph B1

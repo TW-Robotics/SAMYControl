@@ -38,11 +38,12 @@ where the selection of actions should lead eventually to the desired goal state 
 flowchart LR
   subgraph Controller
       subgraph Predict
+            subgraph XXXXX
+	    end
       end
   end
   State --> Predict --> Action
 ```
-
 
 This prediction takes place in an internal representation of states and system-actions depending on the type of XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.

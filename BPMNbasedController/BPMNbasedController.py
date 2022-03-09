@@ -12,11 +12,12 @@ Instances of the classes from SAMYControlInterface described later in this comme
 
 XXXXXbasedController inherits from SAMYControllerBase, and XXXXX is the used approach to describe the desired behaviour of the system (so to say, XXXXX indicates the original controller description used as input by XXXXXbasedController).
 Examples of such controllers are:
-  - DTbasedController (DTControl): the input used for describing the controller/desired behaviour is a ".dot" file with the format used by DTControl to represent a decision tree 
-  - PDDLbasedController (PDDL): the input used for describing the controller/desired behaviour are a PDDL domain, a PDDL problem, a PDDL plan (and an additional configuration file)
-  - BPMNbasedController (BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file)
+  - DTbasedController (XXXXX = DTControl): the input used for describing the controller/desired behaviour is a ".dot" file with the format used by DTControl to represent a decision tree 
+  - PDDLbasedController (XXXXX = PDDL): the input used for describing the controller/desired behaviour are a PDDL domain, a PDDL problem, a PDDL plan (and an additional configuration file)
+  - BPMNbasedController (XXXXX = BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file)
 
 The XXXXXbasedController receives the system state from the SAMYControlInterface in a standardized form, and returns the next action to be performed by the system also described in a standardized form.
+The SAMYControlInterface passes the new system state automatically every time the system state changes, and every time expects to get a Standard System-Action as response. 
    ______________________		    	        _______________________
    |   			|----Standard System-Action---->|		      |
    |			|		      		|		      |
@@ -24,20 +25,29 @@ The XXXXXbasedController receives the system state from the SAMYControlInterface
    |			|		        	|		      |
    |____________________|<-------Standard State---------|_____________________|
 
-The step of going from a system state to an action I call it a "prediction". This prediction takes place in an internal representation of states and system-actions depending on the used XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
+The step of going from a system state to a system-action I call it a "prediction" (following Neural Networks and DTControl naming). This prediction takes place in an internal representation of states and system-actions depending on the used XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.
 
 Hence, a XXXXXbasedController to go from a Standard State to a Standard System-Action, must implement these three functions:
-1.) standardStateToInternalState(standardState) -> returns an internalState
-2.) predict(internalState) -> returns an internal system action
-3.) internalSystemActionToStandardSystemAction -> returns an standard system-action
-What they do is selfexplanatory. More details on them can be found in their prototypes appearing in the BPMNbasedController class defined under this comment.
+1.) standardStateToInternalState(standardState) -> returns a state in internal representation, given a state in standard representation
+2.) predict(internalState) -> returns a system-action in internal representation, given a state in internal representation
+3.) internalSystemActionToStandardSystemAction(internalAction) -> returns a standard system-action, given a system-action in internal representation
+What they do is selfexplanatory. More details on them can be found in their prototypes appearing later, in the BPMNbasedController class defined under this comment.
 
-SAMYControllerBase abstractly defines these three functions, and you must implement them in the XXXXXbasedController. 
-Additionally it implements the so called "standardControlCallback". This is the function which is automatically called by the SAMYControlInterface every time the system state changes.
+SAMYControllerBase abstractly DEFINES these three functions (they cannot be pre-implemented, since they are XXXXX dependent), so you must implement them in the XXXXXbasedController.
+Additionally, SAMYControllerBase IMPLEMENTS the so called "standardControlCallback" using these three functions. 
+This "standardControlCallback(standardSystemState)" function is the function automatically called by the SAMYControlInterface every time the system state changes. 
+This function takes as argument the system state in its standard representation, and returns a system-action in standard representation.
+This standardControlCallback is provided to the SAMYControlInterface as a callback on instantiation of SAMYControlInterface class.
 
 class SAMYControllerBase:
-    def standardControlCallback(self, standardSystemState):
+    def standardStateToInternalState(self, standardState): # To be implemented in XXXXXbasedController
+	pass
+    def predict(self, internalState): # To be implemented in XXXXXbasedController
+	pass
+    def internalSystemActionToStandardSystemAction(self, internalAction): # To be implemented in XXXXXbasedController
+	pass
+    def standardControlCallback(self, standardSystemState): # Already implemented, must NOT be implemented in XXXXXbasedController
         """
         Returns the next system action (SAMYSystemAction) to be performed, given the standard system state. 
         It is the method passed as control callback to the SAMYControlInterface
@@ -48,7 +58,6 @@ class SAMYControllerBase:
 
 You do NOT have to do anything in the SAMYControllerBase.
 
-Hence, standardControlCallback is the function used by the SAMYControlInterface for passing states to the controller (XXXXXbasedController) every time the system state changes, and receiving the actions to perform.
 
 
 #############   SAMYCONTROLINTERFACE CLASSES   #############
@@ -93,7 +102,7 @@ class BPMNbasedController(SAMYControllerBase):
     def standardStateToInternalState(self, standardState):
         """
         State is an array of numeric and categorical values that represents the state of the system according to the SAMYControllerInterface
-        Converts the standard representation of the controller state into the internal representation
+        This function converts the standard representation of the controller state into the internal representation
         """
 
 
@@ -110,7 +119,7 @@ class BPMNbasedController(SAMYControllerBase):
 
 	The StandardStateRepresentation of this state used by the SAMYCore is just an array: [ 2.5, 3.6, false, true, "Product Type B", 100]
 
-	This function just transforms the StandardStateRepresentation to the BPMN_State form and returns it
+	This function just transforms the StandardStateRepresentation to the BPMN_State form (a dictionary with the correponding keys) and returns it
         """
 
         return
@@ -118,7 +127,7 @@ class BPMNbasedController(SAMYControllerBase):
 
     def predict(self, internalState):
         """
-        Given a state in its internal representation, predicts/computes the next action to perform in the internal representation
+        Given a state in its internal representation, this function predicts/computes the next system-action to be performed in internal representation
         """
 
 
@@ -148,12 +157,12 @@ class BPMNbasedController(SAMYControllerBase):
 
     def internalSystemActionToStandardSystemAction(self, internalAction):
         """
-        Converts the internal representation of the system action into the standard system action representation (returns a SAMYSystemAction)
+        This function converts the internal representation of the system-action into the standard system-action representation (returns a SAMYSystemAction)
         """
  
 
         """ EXAMPLE
-        Imagine predict returned a Block2. You should match this Block2 with skills in the SAMYCore, create a SAMYSystemAction and return it
+        Imagine predict returned a Block2. You should match this Block2 with a skill in the SAMYCore with certain parameters, create the corresponding SAMYSystemAction and return it
 
         """
 

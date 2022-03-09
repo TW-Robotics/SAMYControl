@@ -3,7 +3,7 @@ Control tools for the SAMYCore based on SAMYControlInterface
 
 # SAMYControlInterface
 ## Basic idea
-By means of a middleware (SAMYControlInterface) the developer of a controller can focus on the logic of the controller, and ignore implementation details regarding the SAMYCore.
+By means of a middleware (SAMYControlInterface) the developer of a controller can focus on the logic of the controller (XXXXXbasedController), and ignore implementation details regarding the SAMYCore.
 ```mermaid
 flowchart LR
 A(XXXXXbasedController) -- Standard System State --> B[SAMYControlInterface]

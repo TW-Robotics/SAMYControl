@@ -7,7 +7,7 @@ By means of a middleware (SAMYControlInterface) the developer of a controller ca
 ```mermaid
 flowchart LR
 A(XXXXXbasedController) -- Standard System State --> B[SAMYControlInterface]
-B -- Standard System-Action --> A
+B -- Standard System\-Action --> A
 B <-- NOT RELEVANT FOR YOU --> C[SAMYCore]
 ```
 

@@ -42,7 +42,8 @@ flowchart LR
 	    end
       end
   end
-  System State --> XXXXX --> System-Action
+  A[System State] --> XXXXX
+  XXXXX --> B[System-Action]
 ```
 
 This prediction takes place in an internal representation of states and system-actions depending on the type of XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 

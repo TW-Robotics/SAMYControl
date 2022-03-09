@@ -2,7 +2,7 @@
 Control tools for the SAMYCore based on SAMYControlInterface
 
 # SAMYControlInterface
-### Basic idea
+## Basic idea
 By means of a middleware (SAMYControlInterface) the developer of a controller can focus on the logic of the controller, and ignore implementation details regarding the SAMYCore.
 ```mermaid
 flowchart LR
@@ -10,10 +10,9 @@ A(XXXXXbasedController) -- Standard System State --> B[SAMYControlInterface]
 B -- Standard System-Action --> A
 B <-- NOT RELEVANT FOR YOU --> C[SAMYCore]
 ```
-### 
-Instances of the classes from SAMYControlInterface described later in this comment (SAMYCONTROLINTERFACE CLASSES), are the objects required by the SAMYControlInterface to request an action to the system through the SAMYCore.
 
-XXXXXbasedController inherits from SAMYControllerBase, and XXXXX is the used approach to describe the desired behaviour of the system (so to say, XXXXX indicates the original controller description used as input by XXXXXbasedController).
+## XXXXXbasedController
+XXXXXbasedController inherits from SAMYControllerBase class, and XXXXX is the used approach to describe the desired behaviour of the system (so to say, XXXXX indicates the original controller description used as input by XXXXXbasedController).
 Examples of such controllers are:
   - DTbasedController (XXXXX = DTControl): the input used for describing the controller/desired behaviour is a ".dot" file with the format used by DTControl to represent a decision tree 
   - PDDLbasedController (XXXXX = PDDL): the input used for describing the controller/desired behaviour are a PDDL domain, a PDDL problem, a PDDL plan (and an additional configuration file)
@@ -22,8 +21,12 @@ Examples of such controllers are:
 The XXXXXbasedController receives the system state from the SAMYControlInterface in a standardized form, and returns the next action to be performed by the system also described in a standardized form.
 The SAMYControlInterface passes the new system state automatically every time the system state changes, and every time expects to get a Standard System-Action as response. 
 
+## SAMYControllerBase
+All the controllers that use the SAMYControllerBase should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used by the XXXXXbasedController controller.
 
-The step of going from a system state to a system-action I call it a "prediction" (following Neural Networks and DTControl naming). This prediction takes place in an internal representation of states and system-actions depending on the used XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
+### Control
+Briefly stated, controlling a system consists in given the current state of the system, select the actions to be performed in order to reach the goal state. I will refer to the step performed by a controller for going from a system state to a system-action as a "prediction". 
+This prediction takes place in an internal representation of states and system-actions depending on the type of XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.
 
 Hence, a XXXXXbasedController to go from a Standard State to a Standard System-Action, must implement these three functions:

@@ -19,7 +19,7 @@ Examples of such controllers are:
   - BPMNbasedController (XXXXX = BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file)
 
 The XXXXXbasedController receives the system state from the SAMYControlInterface in a standardized form, and returns the next action to be performed by the system also described in a standardized form.
-The SAMYControlInterface passes the new system state automatically every time the system state changes, and every time expects to get a Standard System-Action as response. 
+The SAMYControlInterface passes the new system state automatically to the XXXXXbasedController every time the system state changes, and every time expects to get a Standard System-Action as response. 
 
 ## SAMYControllerBase
 All the controllers that use the SAMYControllerBase should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used by the XXXXXbasedController controller.

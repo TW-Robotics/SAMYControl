@@ -16,12 +16,13 @@ Examples of such controllers are:
 
 The XXXXXbasedController receives the system state from the SAMYControlInterface in a standardized form, and returns the next action to be performed by the system also described in a standardized form.
 The SAMYControlInterface passes the new system state automatically every time the system state changes, and every time expects to get a Standard System-Action as response. 
-   ______________________		    	        _______________________
-   |   			|----Standard System-Action---->|		      |
-   |			|		      		|		      |
-   |XXXXXbasedController|		  		|SAMYControlOInterface|<---THIS IS NOT RELEVANT FOR YOU--> SAMYCore
-   |			|		        	|		      |
-   |____________________|<-------Standard State---------|_____________________|
+
+```sequence {theme="hand"}
+Andrew->China: Says Hello
+Note right of China: China thinks\nabout it
+China-->Andrew: How are you?
+Andrew->>China: I am good thanks!
+```
 
 The step of going from a system state to a system-action I call it a "prediction" (following Neural Networks and DTControl naming). This prediction takes place in an internal representation of states and system-actions depending on the used XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.

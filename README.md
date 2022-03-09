@@ -56,7 +56,20 @@ controlInterface.startSystemControl(100)
 All the controllers that use the SAMYControlInterface (from now on called XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation.
 
 ## Control
-Briefly stated, controlling a system consists in given the current state of the system, select the actions to be performed in order to reach the goal state. 
+Briefly stated, controlling a system consists in given the current state of the system, select the system actions to be performed in order to reach the goal state. In this context, we understand by system-action a set of individual actions, one for each agent in the system.
+System-Action:
+```mermaid
+flowchart LR
+subgraph System-Action
+	subgraph Action Agent 1
+	end
+	subgraph Action Agent 2
+	end
+	subgraph Action Agent 3
+	end
+end
+```
+
 Control loop:
 ```mermaid
 flowchart LR

@@ -1,15 +1,16 @@
 # SAMYControl
-Control tools for the SAMYCore
+Control tools for the SAMYCore based on SAMYControlInterface
 
-##
-
-Basic idea: by means of a middleware (SAMYControlInterface) the developer of a controller can focus on the logic of the controller, and ignore implementation details regarding the SAMYCore.
+# SAMYControlInterface
+### Basic idea
+By means of a middleware (SAMYControlInterface) the developer of a controller can focus on the logic of the controller, and ignore implementation details regarding the SAMYCore.
 ```mermaid
 flowchart LR
-A(XXXXXbasedController) <--> B[SAMYControlInterface]
+A(XXXXXbasedController) -- Standard System State --> B[SAMYControlInterface]
+B -- Standard System-Action --> A
 B <-- NOT RELEVANT FOR YOU --> C[SAMYCore]
 ```
-
+### 
 Instances of the classes from SAMYControlInterface described later in this comment (SAMYCONTROLINTERFACE CLASSES), are the objects required by the SAMYControlInterface to request an action to the system through the SAMYCore.
 
 XXXXXbasedController inherits from SAMYControllerBase, and XXXXX is the used approach to describe the desired behaviour of the system (so to say, XXXXX indicates the original controller description used as input by XXXXXbasedController).

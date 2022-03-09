@@ -40,70 +40,9 @@ This prediction takes place in an internal representation of states and system-a
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.
 
 ### SAMYControllerBase Implementation
-As previously stated, all the controllers that use the SAMYControlInterface (XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation.
-The pattern in the controllers enforced by this class is very simple:
-```mermaid
-flowchart LR
-  subgraph XXXXXbasedController
-	subgraph standardStateToInternalState
-	    subgraph 1
-	    end
-	end
-        subgraph Predict
-            subgraph 2   XXXXX
-	    end
-        end
-	subgraph internalSystemActionToStandardSystemAction
-	    subgraph 3
-	    end
-        end
-  end
-  A[Standard System State] --> standardStateToInternalState
-  standardStateToInternalState -- internal state repr. --> Predict
-  Predict -- internal action repr. --> internalSystemActionToStandardSystemAction
-  internalSystemActionToStandardSystemAction --> B[Standard System-Action]
+As previously stated, all the controllers that use the SAMYControlInterface (XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation. The SAMYControlInterface is the following:
 
-```
-
-
-
-Hence, a XXXXXbasedController to go from a Standard State to a Standard System-Action, must implement these three functions:
-1.) standardStateToInternalState(standardState) -> returns a state in internal representation, given a state in standard representation
-2.) predict(internalState) -> returns a system-action in internal representation, given a state in internal representation
-3.) internalSystemActionToStandardSystemAction(internalAction) -> returns a standard system-action, given a system-action in internal representation
-What they do is selfexplanatory. More details on them can be found in their prototypes appearing later, in the BPMNbasedController class defined under this comment.
-
-SAMYControllerBase abstractly DEFINES these three functions (they cannot be pre-implemented, since they are XXXXX dependent), so you must implement them in the XXXXXbasedController.
-Additionally, SAMYControllerBase IMPLEMENTS the so called "standardControlCallback" using these three functions. 
-This "standardControlCallback(standardSystemState)" function is the function automatically called by the SAMYControlInterface every time the system state changes. 
-This function takes as argument the system state in its standard representation, and returns a system-action in standard representation.
-This standardControlCallback is provided to the SAMYControlInterface as a callback on instantiation of SAMYControlInterface class.
-
-
-## XXXXXbasedController
-XXXXXbasedController inherits from SAMYControllerBase class, and XXXXX is the used approach to describe the desired behaviour of the system (so to say, XXXXX indicates the original controller description used as input by XXXXXbasedController).
-Examples of such controllers are:
-  - DTbasedController (XXXXX = DTControl): the input used for describing the controller/desired behaviour is a ".dot" file with the format used by DTControl to represent a decision tree 
-  - PDDLbasedController (XXXXX = PDDL): the input used for describing the controller/desired behaviour are a PDDL domain, a PDDL problem, a PDDL plan (and an additional configuration file)
-  - BPMNbasedController (XXXXX = BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file)
-
-The XXXXXbasedController receives the system state from the SAMYControlInterface in a standardized form, and returns the next action to be performed by the system also described in a standardized form.
-The SAMYControlInterface passes the new system state automatically to the XXXXXbasedController every time the system state changes, and every time expects to get a Standard System-Action as response. 
-
-### XXXXXbasedController pattern
-Hence, a XXXXXbasedController to go from a Standard State to a Standard System-Action, must implement these three functions:
-1.) standardStateToInternalState(standardState) -> returns a state in internal representation, given a state in standard representation
-2.) predict(internalState) -> returns a system-action in internal representation, given a state in internal representation
-3.) internalSystemActionToStandardSystemAction(internalAction) -> returns a standard system-action, given a system-action in internal representation
-What they do is selfexplanatory. More details on them can be found in their prototypes appearing later, in the BPMNbasedController class defined under this comment.
-
-SAMYControllerBase abstractly DEFINES these three functions (they cannot be pre-implemented, since they are XXXXX dependent), so you must implement them in the XXXXXbasedController.
-Additionally, SAMYControllerBase IMPLEMENTS the so called "standardControlCallback" using these three functions. 
-This "standardControlCallback(standardSystemState)" function is the function automatically called by the SAMYControlInterface every time the system state changes. 
-This function takes as argument the system state in its standard representation, and returns a system-action in standard representation.
-This standardControlCallback is provided to the SAMYControlInterface as a callback on instantiation of SAMYControlInterface class.
-
-```
+```Python
 class SAMYControllerBase:
     def standardStateToInternalState(self, standardState): # To be implemented in XXXXXbasedController
 	pass
@@ -120,4 +59,104 @@ class SAMYControllerBase:
         internalSystemAction = self.predict(internalState) # 2
         return self.internalSystemActionToStandardSystemAction( internalSystemAction ) #3
 ```
-You do NOT have to do anything in the SAMYControllerBase.
+
+
+The pattern in the controllers enforced by this class is very simple:
+```mermaid
+flowchart LR
+  subgraph SAMYControllerBase
+	subgraph standardControlCallback
+		subgraph standardStateToInternalState
+		    subgraph 1
+		    end
+		end
+		subgraph Predict
+		    subgraph 2   XXXXX
+		    end
+		end
+		subgraph internalSystemActionToStandardSystemAction
+		    subgraph 3
+		    end
+		end
+	end
+  end
+  A[Standard System State] --> standardControlCallback
+  standardStateToInternalState -- internal state repr. --> Predict
+  Predict -- internal action repr. --> internalSystemActionToStandardSystemAction
+  standardControlCallback --> B[Standard System-Action]
+
+```
+ Three functions required for going from a Standard State to a Standard System-Action, namely:
+ 
+1. standardStateToInternalState(standardState) -> returns a state in internal representation, given a state in standard representation
+2. predict(internalState) -> returns a system-action in internal representation, given a state in internal representation
+3. internalSystemActionToStandardSystemAction(internalAction) -> returns a standard system-action, given a system-action in internal representation
+
+SAMYControllerBase abstractly DEFINES these three functions (they cannot be pre-implemented, since they are XXXXX dependent), so XXXXXbasedController must implement them. What these three functions do is selfexplanatory. 
+
+Additionally, SAMYControllerBase IMPLEMENTS the so called "standardControlCallback" using these three functions. 
+This "standardControlCallback(standardSystemState)" function is the function automatically called by the SAMYControlInterface every time the system state changes. 
+This function takes as argument the system state in its standard representation, and returns a system-action in standard representation.
+This standardControlCallback is provided to the SAMYControlInterface as a callback on instantiation of SAMYControlInterface class.
+
+**You do NOT have to do anything in the SAMYControllerBase!! Inherit from it to implement the XXXXXbasedController.**
+
+## XXXXXbasedController
+XXXXXbasedController inherits from SAMYControllerBase class and essentially implements the three functions required by the function "standardControlCallback(standardSystemState)" of SAMYControllerBase:
+ 
+1. standardStateToInternalState(standardState) -> returns a state in internal representation, given a state in standard representation
+2. predict(internalState) -> returns a system-action in internal representation, given a state in internal representation
+3. internalSystemActionToStandardSystemAction(internalAction) -> returns a standard system-action, given a system-action in internal representation
+
+XXXXX represents the used approach to describe the desired behaviour of the system (so to say, XXXXX indicates the original controller description used as input by XXXXXbasedController).
+Examples of such controllers are:
+  - DTbasedController (XXXXX = DTControl): the input used for describing the controller/desired behaviour is a ".dot" file with the format used by DTControl to represent a decision tree 
+  - PDDLbasedController (XXXXX = PDDL): the input used for describing the controller/desired behaviour are a PDDL domain, a PDDL problem, a PDDL plan (and an additional configuration file)
+  - BPMNbasedController (XXXXX = BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file)
+
+## Standard System State Representation and Standard System-Action Representation
+### Standard System State Representation
+The standard system state representation is a list of numerical and categorical (strings) values. The order of the elements in the list is given by the order specified when isntantiating the SAMYControlInterface.
+Example:
+
+```Python
+standardState = [ 123.3, 65.2, "Alarm 1", "True", "False", 154.23 ]
+```
+
+
+### Standard System-Action Representation
+The classes used for this, defined in SAMYControlInterface, are the following:
+```Python
+############# These classes are the objects required by the SAMYControlInterface to perform an action so refer to them as the standard representation of the actions.
+# Hence, the "computed" actions by the SAMYControllers that are passed to the SAMYControlInterface must convert these actions first to these classes.
+
+class SAMYActionParameter(): # A class containing describing a parameter of an action
+    def __init__(self, skillParameterNumber_, valueType_ , value_):
+        self.skillParameterNumber = skillParameterNumber_ # The command targeted by this parameter within a skill
+        self.valueType = valueType_ # "DataBaseReference" or Other (the self.value will be string that will require be translated into a CRCLCommandParameterSet)
+        self.value = value_ # The value of the parameter (can be a string than later on can be converted into a CRCLCommandParameterSet required by the 
+                            # skillParameterNumber using a CRCLCommandParameterSet that takes self.value as "metaparameter", 
+                            # or the self.value can be a reference to an element in the SAMYCore database (the name of the parameter stored there)
+
+
+class SAMYAction: # A class describing a specific action to be performed by an agent
+    def __init__(self, agentName_, skillName_, params_ = []):
+        self.agentName = agentName_
+        self.skillName = skillName_ # Name of the skill of the agent. In case nothing should be done with an agen, the name to use is "pass"
+        self.params = params_ # An array of SAMYActionParameters
+
+    def __str__(self):
+        retval = "\n-----------SAMYAction-----------\n"
+        retval = retval + "Agent name: " + self.agentName + "\n"
+        retval = retval + "Skill name: " + self.skillName + "\n"
+        retval = "--------------------------------\n\n"
+        return retval
+
+
+class SAMYSystemAction: # An action describing the action to be performed on the total system (an array of SAMYActions, one for each agent)
+    def __init__(self, individualActionsArray):
+        self.individualActions = individualActionsArray
+
+
+#######################################################
+```

@@ -11,10 +11,51 @@ B -- Standard System-Action --> A
 B <-- NOT RELEVANT FOR YOU --> C[SAMYCore]
 ```
 
-## SAMYControllerBase
+## SAMYControlInterface Implementation
+The SAMYControlInterface, among other functionalities, connects to the SAMYCore, requests new actions every time the system state changes, inspects the SAMYCore information model, etc.
+The API of the SAMYControlInterface is very simple. It just needs to be instantiated with three parameters:
+
+1. Address of the SAMYCore
+2. An array of nodes names in the SAMYCore node SystemStatus that should be tracked since they describe the state of the system
+3. A standardControlCallback that "gives access" to the SAMYControlInterface to a control function (more on this later)
+
+Once created, startSystemControl can be called, that optionally can contain the refresh rate in ms.
+
+Two examples are:
+```Python
+# Controller Creation and setup
+dtDotFileParser = DTControlDotFileParser.DTControlDotFileParser('/home/jbg/Desktop/SAMY/SAMYControl/UseCase1/UseCase1_Controller.dot')
+controller = DTbasedController.DTbasedController(dtDotFileParser.root, dtDotFileParser.x_metadata, dtDotFileParser.y_metadata )
+
+
+
+# ControlInterface creation and start of controlling
+controlInterface = SAMYControlInterface.SAMYControlInterface( 'opc.tcp://localhost:4840/', controller.controlStateVariables, controller.standardControlCallback)
+controlInterface.startSystemControl(100)
+```
+
+```Python
+# Controller Creation and setup
+controller = PDDLbasedController.PDDLbasedController('opc.tcp://localhost:4840/', '/home/jbg/Desktop/SAMY/SAMYControl/UseCases_PDDL/res/domain-res-strips.pddl', '/home/jbg/Desktop/SAMY/SAMYControl/UseCases_PDDL/res/problem-res-strips-1.pddl', '/home/jbg/Desktop/SAMY/SAMYControl/UseCases_PDDL/res/plan-res-strips-1-manual-human-ur10.plan')
+value = input("Generate configuration template\n")
+controller.generateConfigurationTemplate()
+value = input("Press enter to read the configuration file\n")
+controller.parseConfigFile()
+value = input("Press enter to set up the controller\n")
+controller.setupController()
+
+
+
+# ControlInterface creation and start of controlling
+controlInterface = SAMYControlInterface.SAMYControlInterface( 'opc.tcp://localhost:4840/', controller.getSystemStatusControlVariablesNames(), controller.standardControlCallback)
+controlInterface.startSystemControl(100)
+```
+
+
+# SAMYControllerBase
 All the controllers that use the SAMYControlInterface (from now on called XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation.
 
-### Control
+## Control
 Briefly stated, controlling a system consists in given the current state of the system, select the actions to be performed in order to reach the goal state. 
 Control loop:
 ```mermaid
@@ -39,7 +80,7 @@ flowchart LR
 This prediction takes place in an internal representation of states and system-actions depending on the type of XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.
 
-### SAMYControllerBase Implementation
+## SAMYControllerBase Implementation
 As previously stated, all the controllers that use the SAMYControlInterface (XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation. The SAMYControlInterface is the following:
 
 ```Python
@@ -101,7 +142,7 @@ This standardControlCallback is provided to the SAMYControlInterface as a callba
 
 **You do NOT have to do anything in the SAMYControllerBase!! Inherit from it to implement the XXXXXbasedController.**
 
-## XXXXXbasedController
+# XXXXXbasedController
 XXXXXbasedController inherits from SAMYControllerBase class and essentially implements the three functions required by the function "standardControlCallback(standardSystemState)" of SAMYControllerBase:
  
 1. standardStateToInternalState(standardState) -> returns a state in internal representation, given a state in standard representation
@@ -114,7 +155,7 @@ Examples of such controllers are:
   - PDDLbasedController (XXXXX = PDDL): the input used for describing the controller/desired behaviour are a PDDL domain, a PDDL problem, a PDDL plan (and an additional configuration file)
   - BPMNbasedController (XXXXX = BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file)
 
-## Standard System State Representation and Standard System-Action Representation
+# Standard System State Representation and Standard System-Action Representation
 ### Standard System State Representation
 The standard system state representation is a list of numerical and categorical (strings) values. The order of the elements in the list is given by the order specified when isntantiating the SAMYControlInterface.
 Example:
@@ -124,7 +165,7 @@ standardState = [ 123.3, 65.2, "Alarm 1", "True", "False", 154.23 ]
 ```
 
 
-### Standard System-Action Representation
+## Standard System-Action Representation
 The classes used for this, defined in SAMYControlInterface, are the following:
 ```Python
 ############# These classes are the objects required by the SAMYControlInterface to perform an action so refer to them as the standard representation of the actions.

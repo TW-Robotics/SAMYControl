@@ -36,10 +36,13 @@ where the selection of actions should lead eventually to the desired goal state 
 
 ```mermaid
 flowchart LR
-  subgraph TOP
+  subgraph Controller
+      subgraph PREDICT
+      end
   end
-  A --> TOP --> B
-  B1 --> B2
+
+  end
+  State --> PREDICT --> Action
 ```
 
 

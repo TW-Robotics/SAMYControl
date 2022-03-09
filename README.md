@@ -127,7 +127,7 @@ flowchart LR
   standardControlCallback --> B[Standard System-Action]
 
 ```
- Three functions required for going from a Standard State to a Standard System-Action, namely:
+ Three functions are required for going from a Standard State to a Standard System-Action, namely:
  
 1. standardStateToInternalState(standardState) -> returns a state in internal representation, given a state in standard representation
 2. predict(internalState) -> returns a system-action in internal representation, given a state in internal representation
@@ -156,7 +156,7 @@ Examples of such controllers are:
   - BPMNbasedController (XXXXX = BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file)
 
 # Standard System State Representation and Standard System-Action Representation
-### Standard System State Representation
+## Standard System State Representation
 The standard system state representation is a list of numerical and categorical (strings) values. The order of the elements in the list is given by the order specified when isntantiating the SAMYControlInterface.
 Example:
 

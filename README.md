@@ -29,8 +29,8 @@ Briefly stated, controlling a system consists in given the current state of the 
 Control loop:
 ```mermaid
 flowchart LR
-A(Controller) -- Action --> B(System)
-B -- State --> A
+A(Controller) -- System-Action --> B(System)
+B -- System State --> A
 ```
 where the selection of actions should lead eventually to the desired goal state of the system. I will refer to the step performed by a controller for going from a system state to a system-action as a "prediction". 
 
@@ -42,7 +42,7 @@ flowchart LR
 	    end
       end
   end
-  State --> XXXXX --> Action
+  System State --> XXXXX --> System-Action
 ```
 
 This prediction takes place in an internal representation of states and system-actions depending on the type of XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 

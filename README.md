@@ -63,7 +63,7 @@ flowchart LR
 A(Controller) -- System-Action --> B(System)
 B -- System State --> A
 ```
-where the selection of actions should lead eventually to the desired goal state of the system. I will refer to the step performed by a controller for going from a system state to a system-action as a "prediction". 
+where the selection of actions should lead eventually to the desired goal state of the system, while satisfying certain constraints in the intermediate states. I will refer to the step performed by a controller for going from a system state to a system-action as a "prediction". 
 
 ```mermaid
 flowchart LR

@@ -7,7 +7,7 @@ Basic idea: by means of a middleware (SAMYControlInterface) the developer of a c
 ```mermaid
 graph LR
 A(XXXXXbasedController) <--> B[SAMYControlInterface]
-B <--> |NOT RELEVANT FOR YOU| C[SAMYCore]
+B <-- NOT RELEVANT FOR YOU --> C[SAMYCore]
 ```
 
 Instances of the classes from SAMYControlInterface described later in this comment (SAMYCONTROLINTERFACE CLASSES), are the objects required by the SAMYControlInterface to request an action to the system through the SAMYCore.

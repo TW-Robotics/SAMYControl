@@ -4,7 +4,11 @@ Control tools for the SAMYCore
 ##
 
 Basic idea: by means of a middleware (SAMYControlInterface) the developer of a controller can focus on the logic of the controller, and ignore implementation details regarding the SAMYCore.
-XXXXXbasedController <-----> SAMYControlInterface <-----> SAMYCore
+```mermaid
+graph LR
+A(XXXXXbasedController) <--> B[SAMYControlInterface]
+B <--> |NOT RELEVANT FOR YOU| C[SAMYCore]
+```
 
 Instances of the classes from SAMYControlInterface described later in this comment (SAMYCONTROLINTERFACE CLASSES), are the objects required by the SAMYControlInterface to request an action to the system through the SAMYCore.
 
@@ -17,10 +21,6 @@ Examples of such controllers are:
 The XXXXXbasedController receives the system state from the SAMYControlInterface in a standardized form, and returns the next action to be performed by the system also described in a standardized form.
 The SAMYControlInterface passes the new system state automatically every time the system state changes, and every time expects to get a Standard System-Action as response. 
 
-```mermaid
-graph LR
-A(XXXXXbasedController) <-->B[SAMYControlInterface]<--->|NOT RELEVANT FOR YOU| C[SAMYCore]
-```
 
 The step of going from a system state to a system-action I call it a "prediction" (following Neural Networks and DTControl naming). This prediction takes place in an internal representation of states and system-actions depending on the used XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.

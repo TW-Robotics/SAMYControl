@@ -40,7 +40,7 @@ flowchart LR
       subgraph Predict
       end
   end
-  State --> PREDICT --> Action
+  State --> Predict --> Action
 ```
 
 

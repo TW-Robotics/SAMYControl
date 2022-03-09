@@ -12,7 +12,7 @@ B <-- NOT RELEVANT FOR YOU --> C[SAMYCore]
 ```
 
 ## SAMYControllerBase
-All the controllers that use the SAMYControllerBase should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation.
+All the controllers that use the SAMYControlInterface (from now on called XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation.
 
 ### Control
 Briefly stated, controlling a system consists in given the current state of the system, select the actions to be performed in order to reach the goal state. 
@@ -27,17 +27,53 @@ where the selection of actions should lead eventually to the desired goal state 
 ```mermaid
 flowchart LR
   subgraph Controller
-      subgraph Predictor
+      subgraph Predict
             subgraph XXXXX
 	    end
       end
   end
-  A[System State] --> XXXXX
-  XXXXX --> B[System-Action]
+  A[System State] --> Predict
+  Predict --> B[System-Action]
 ```
 
 This prediction takes place in an internal representation of states and system-actions depending on the type of XXXXX. For example, in its internal representation, DTControl uses an numpy array for the state and a tuple of strings for the system actions. PDDL uses an array of booleans (fluents) for representing the state, and a list of ad hoc created clases for representing the system-actions, which essentially are actions names with parameters names. 
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.
+
+### SAMYControllerBase Implementation
+As previously stated, all the controllers that use the SAMYControlInterface (XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation.
+The pattern in the controllers enforced by this class is very simple:
+```mermaid
+flowchart LR
+  subgraph Controller
+	subgraph standardStateToInternalState
+	end
+      subgraph Predict
+            subgraph XXXXX
+	    end
+	subgraph internalSystemActionToStandardSystemAction
+	end
+      end
+  end
+  A[Standard System State] --> standardStateToInternalState
+  standardStateToInternalState -- internal system state representation --> Predict
+  Predict --> internalSystemActionToStandardSystemAction
+  internalSystemActionToStandardSystemAction --> B[Standard System-Action]
+
+```
+
+
+
+Hence, a XXXXXbasedController to go from a Standard State to a Standard System-Action, must implement these three functions:
+1.) standardStateToInternalState(standardState) -> returns a state in internal representation, given a state in standard representation
+2.) predict(internalState) -> returns a system-action in internal representation, given a state in internal representation
+3.) internalSystemActionToStandardSystemAction(internalAction) -> returns a standard system-action, given a system-action in internal representation
+What they do is selfexplanatory. More details on them can be found in their prototypes appearing later, in the BPMNbasedController class defined under this comment.
+
+SAMYControllerBase abstractly DEFINES these three functions (they cannot be pre-implemented, since they are XXXXX dependent), so you must implement them in the XXXXXbasedController.
+Additionally, SAMYControllerBase IMPLEMENTS the so called "standardControlCallback" using these three functions. 
+This "standardControlCallback(standardSystemState)" function is the function automatically called by the SAMYControlInterface every time the system state changes. 
+This function takes as argument the system state in its standard representation, and returns a system-action in standard representation.
+This standardControlCallback is provided to the SAMYControlInterface as a callback on instantiation of SAMYControlInterface class.
 
 
 ## XXXXXbasedController

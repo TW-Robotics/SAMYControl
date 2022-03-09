@@ -6,8 +6,8 @@ Control tools for the SAMYCore
 Basic idea: by means of a middleware (SAMYControlInterface) the developer of a controller can focus on the logic of the controller, and ignore implementation details regarding the SAMYCore.
 ```mermaid
 flowchart LR
-A(XXXXXbasedController) <----> B[SAMYControlInterface]
-B <---- NOT RELEVANT FOR YOU ----> C[SAMYCore]
+A(XXXXXbasedController) <--> B[SAMYControlInterface]
+B <-- NOT RELEVANT FOR YOU --> C[SAMYCore]
 ```
 
 Instances of the classes from SAMYControlInterface described later in this comment (SAMYCONTROLINTERFACE CLASSES), are the objects required by the SAMYControlInterface to request an action to the system through the SAMYCore.

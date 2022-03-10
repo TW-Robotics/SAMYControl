@@ -23,10 +23,14 @@ The SAMYControlInterface, among other functionalities, connects to the SAMYCore,
 The API of the SAMYControlInterface is very simple. It just needs to be instantiated with three parameters:
 
 1. Address of the SAMYCore
-2. An array of node names that represent the SystemStatus. These nodes are provided by the SAMYCore depending on what agents (devices) are configured. There is on node for each agent that represents its status.
-3. A standardControlCallback that "gives access" to the SAMYControlInterface to a control function (more on this later)
+2. An array of nodes' names child of the node SystemStatus of the SAMYCore, that represent the state of the system.
+3. A standardControlCallback that allows to the SAMYControlInterface "accessing" the a control function (more on this later)
 
-How to get the correct node names is not clear to me. Does the user have to do that or does the SAMYControlInterface do that automitically based on the configuration of the SAMYCore?
+For example, for marking the nodes that will be tracked by the SAMYControlInterface (parameter 2. in previous lines), one pass an array such:
+```
+[ "Robot_RobotUR5_CRCLStatus", "Robot_RobotABB_CurrentState", "Robot_RobotABB_CurrentState", Robot_KukaIiwa_Position, "InformationSource_Sensor10_0", "InformationSource_Alarm3_3" ]
+```
+All these are names of childs of the node SystemStatus created automatically in the SAMYCore based on the configuration, and this way we mark to the SAMYControlInterface that the controller uses the values of these nodes for describing the system state. Every time the value of these nodes changes, the system has changed and the SAMYControlInterface requests a new action to the controller.
 
 Once created, startSystemControl can be called, that optionally can contain the refresh rate in ms.
 

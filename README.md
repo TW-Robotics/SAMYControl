@@ -28,9 +28,10 @@ The API of the SAMYControlInterface is very simple. It just needs to be instanti
 
 For example, for marking the nodes that will be tracked by the SAMYControlInterface (parameter 2. in previous lines), one pass an array such:
 ```
-[ "Robot_RobotUR5_CRCLStatus", "Robot_RobotABB_CurrentState", "Robot_RobotABB_CurrentState", Robot_KukaIiwa_Position, "InformationSource_Sensor10_0", "InformationSource_Alarm3_3" ]
+[ "Robot_RobotUR5_CRCLStatus", "Robot_RobotABB_CurrentState", "Robot_RobotABB_CurrentState", 
+"Robot_KukaIiwa_Position", "InformationSource_Sensor10_0", "InformationSource_Alarm3_3" ]
 ```
-All these are names of childs of the node SystemStatus created automatically in the SAMYCore based on the configuration, and this way we mark to the SAMYControlInterface that the controller uses the values of these nodes for describing the system state. Every time the value of these nodes changes, the system has changed and the SAMYControlInterface requests a new action to the controller.
+All these are names of childs of the node SystemStatus created automatically in the SAMYCore based on the configuration. This way, we indicate to the SAMYControlInterface that the controller uses the values of these nodes for describing the system state. Every time the value of these nodes changes, the system state has changed and the SAMYControlInterface requests a new action to the controller.
 
 Once created, startSystemControl can be called, that optionally can contain the refresh rate in ms.
 

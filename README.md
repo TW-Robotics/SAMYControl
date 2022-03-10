@@ -6,7 +6,7 @@ The SAMYControlInterface helps to implement controllers that use the SAMY framew
 
 ```mermaid
 graph TD;
-A(recive SAMY system state)  --> G(convert to internal state) --> B(predict next actions) -->  C(internal actions representation) --> F(convert internal actions to SAMY actions) --> H(send SAMY action)
+A(receive SAMY system state on change of state)  --> G(convert to internal state representation) --> B(predict next actions) -->  C(actions in internal representation) --> F(convert actions to SAMY actions representation) --> H(send SAMY action)
 ```
 
 ## Basic idea
@@ -144,8 +144,8 @@ flowchart LR
 	end
   end
   A[Standard System State] --> standardControlCallback
-  standardStateToInternalState -- internal state repr. --> Predict
-  Predict -- internal action repr. --> internalSystemActionToStandardSystemAction
+  standardStateToInternalState -- internal state representation --> Predict
+  Predict -- internal system-action representation --> internalSystemActionToStandardSystemAction
   standardControlCallback --> B[Standard System-Action]
 
 ```

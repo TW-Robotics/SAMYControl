@@ -23,7 +23,7 @@ The SAMYControlInterface, among other functionalities, connects to the SAMYCore,
 The API of the SAMYControlInterface is very simple. It just needs to be instantiated with three parameters:
 
 1. Address of the SAMYCore
-2. An array of nodes' names child of the node SystemStatus of the SAMYCore, that represent the state of the system.
+2. An array of nodes' names that represent the state of the system. These nodes must be child of the SystemStatus node of the SAMYCore.
 3. A standardControlCallback that allows to the SAMYControlInterface "accessing" the a control function (more on this later)
 
 For example, for marking the nodes that will be tracked by the SAMYControlInterface (parameter 2. in previous lines), one pass an array such:

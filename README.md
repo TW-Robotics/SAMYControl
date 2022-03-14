@@ -108,7 +108,7 @@ This prediction takes place in an internal representation of states and system-a
 In the case of BPMN it will used a ???dictionary??? for representing the state and ??? ad hoc created classes ??? for representing the system-actions.
 
 ## SAMYControllerBase Implementation
-As previously stated, all the controllers that use the SAMYControlInterface (XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces a certain pattern to be used in the XXXXXbasedController controller implementation. The SAMYControlInterface is the following:
+As previously stated, all the controllers that use the SAMYControlInterface (XXXXXbasedControllers) should inherit from SAMYControllerBase. SAMYControllerBase is a very basic class that enforces the pattern previously described being used in the XXXXXbasedController controller implementation. The SAMYControlInterface is the following:
 
 ```Python
 class SAMYControllerBase:

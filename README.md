@@ -180,7 +180,7 @@ XXXXX represents the used approach to describe the desired behaviour of the syst
 Examples of such controllers are:
   - DTbasedController (XXXXX = DTControl): the input used for describing the controller/desired behaviour is a ".dot" file with the format used by DTControl to represent a decision tree
   - PDDLbasedController (XXXXX = PDDL): the input used for describing the controller/desired behaviour are a PDDL domain, a PDDL problem, a PDDL plan (and an additional configuration file)
-  - BPMNbasedController (XXXXX = BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file)
+  - BPMNbasedController (XXXXX = BPMN): the input used for describing the controller/desired behaviour should be a SAMYBPMN file (and probbably an additional configuration file). Internally I guess it could be a Directed ?Acyclic? Graph with different types of nodes and relations representing the different types of elements existing in BPMN.
 
 # Standard System State Representation and Standard System-Action Representation
 ## Standard System State Representation

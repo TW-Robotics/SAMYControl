@@ -1,23 +1,18 @@
 import networkx as nx
-from xml.dom import minidom
 import matplotlib.pyplot as plt
+from xml.dom import minidom
 
+from GraphBuilder import GraphBuilder
 
 class GraphPlanner:
 
     def __init__(self, path):
         xmlDom = minidom.parse(path)
-        self.Graph = nx.DiGraph()
-
-        transitions = []
-        stringlist = xmlDom.getElementsByTagName('SamyBpmnModel:Transition')
-        for x in stringlist:
-            transitions.append((x.attributes['sourceRef'].value, x.attributes['targetRef'].value))
-        self.Graph.add_edges_from(transitions)
+        self.Graph = GraphBuilder.build(xmlDom)
 
     def drawGraph(self):
         subax1 = plt.plot()
-        nx.draw(self.Graph, pos=nx.kamada_kawai_layout(self.Graph))
+        nx.draw(self.Graph, pos=nx.spring_layout(self.Graph, seed=47))
         plt.show()
 
 

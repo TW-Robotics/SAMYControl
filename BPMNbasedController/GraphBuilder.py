@@ -2,24 +2,32 @@ import networkx as nx
 
 class GraphBuilder:
 
-    Types = ['Start', 'End', 'Process', 'Transition', 'VariableManipulationTable', 'VariableContainer', 'ExclusiveGateway', 'LoopbackGateway', 'ParallelGateway']
+    Types = ['VariableContainer', 'Transition', 'Start', 'End', 'Process', 'VariableManipulationTable', 'ExclusiveGateway', 'LoopbackGateway', 'ParallelGateway']
 
     def build(dom):
         G = nx.DiGraph()
 
-        nodes = GraphBuilder.parseProcesses(dom)
+        nodes = GraphBuilder.initializeGraph(dom)
         G.add_nodes_from(nodes)
+        edges = GraphBuilder.parseTransitions(dom, nodes)
+        G.add_edges_from(edges)
 
-        edges = dict(GraphBuilder.parseTransitions(dom, nodes))
-        edges = GraphBuilder.parseLoopback(G, dom, edges)
-
-        edge_list = []
-        for edge in list(edges.values()):
-            if(edge[0] in nodes and edge[1] in nodes):
-                edge_list.append(edge)
-        G.add_edges_from(edge_list)
+        G = GraphBuilder.parseVariableTable(G, dom)
+        G = GraphBuilder.parseLoopbackGateway(G, dom)
+        G = GraphBuilder.parseExlusiveGateway(G, dom)
+        G = GraphBuilder.parseParallelGateway(G, dom)
 
         return G
+
+    def initializeGraph(dom):
+        nodes = []
+        for i in range(2, len(GraphBuilder.Types)):
+            elements = dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[i])
+
+            for element in elements:
+                nodes.append(element.attributes['id'].value)
+        return nodes
+
 
     def parseProcesses(dom):
         nodes = []
@@ -32,30 +40,68 @@ class GraphBuilder:
         return nodes
 
     def parseTransitions(dom, nodes):
-        edges = {}
+        edges = []
+        elements = dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[1])
 
-        for i in range(3):
-            elements = dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[3])
+        for element in elements:
+            id = element.attributes['id'].value
+            source = element.attributes['sourceRef'].value
+            target = element.attributes['targetRef'].value
 
-            for element in elements:
-                id = element.attributes['id'].value
-                source = element.attributes['sourceRef'].value
-                target = element.attributes['targetRef'].value
-
-                edges[id] = (source, target)
+            edges.append((source, target))
         return edges
 
-    def parseLoopback(G, dom, edges):
+    def parseLoopbackGateway(G, dom):
+        # LoopbackGateway: multiple incoming && one outgoing
         elements = dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[7])
 
         for element in elements:
-            outgoing = GraphBuilder.getChildValue(element.getElementsByTagName('outgoing')[0])
-            for incoming in element.getElementsByTagName('incoming'):
-                incoming = GraphBuilder.getChildValue(incoming)
-                edges[incoming] = (edges[incoming][0], edges[outgoing][1])
+            id = element.attributes['id'].value
+            print('Loopback:' + id)
+            G = GraphBuilder.combineEdges(G, id)
+        return G
 
-            del edges[outgoing]
-        return edges
+    def parseExlusiveGateway(G, dom):
+        # ExclusiveGateway: multiple incoming && one outgoing || one incoming && multiple outgoing
+        elements = dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[6])
+
+        for element in elements:
+            id = element.attributes['id'].value
+            print("ExclusiveGateway: " +  id)
+            G = GraphBuilder.combineEdges(G, id)
+        return G
+
+    def parseParallelGateway(G, dom):
+        # ParallelGateway: one incoming && multiple outgoing
+        elements = dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[8])
+
+        for element in elements:
+            id = element.attributes['id'].value
+            print('ParallelGateway: ' + id)
+            G = GraphBuilder.combineEdges(G, id)
+
+        return G
+
+    def parseVariableTable(G, dom):
+        # VariableManipulationTable: one incoming & one outgoing
+        elements = dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[5])
+
+        for element in elements:
+            id = element.attributes['id'].value
+            print('VariableTable: ' + id)
+            G = GraphBuilder.combineEdges(G, id)
+        return G
+
+    def combineEdges(G, id):
+        outgoingNodes = list(G.successors(id))
+        incomingNodes = list(G.predecessors(id))
+
+        for incoming in incomingNodes:
+            for outgoing in outgoingNodes:
+                G.add_edge(incoming, outgoing)
+
+        G.remove_node(id)
+        return G
 
     def getChildValue(element):
         return element.childNodes[0].nodeValue

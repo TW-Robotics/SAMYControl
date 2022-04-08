@@ -11,8 +11,10 @@ class GraphPlanner:
         self.Graph = GraphBuilder.build(xmlDom)
 
     def drawGraph(self):
-        subax1 = plt.plot()
-        nx.draw(self.Graph, pos=nx.spring_layout(self.Graph, seed=47))
+        # subax1 = plt.plot()
+        plt.figure(figsize=(15,10))
+
+        nx.draw(self.Graph, pos = nx.spring_layout(self.Graph, seed=500556, k=0.3, iterations=20), with_labels=True) #, with_labels=True, pos = nx.spring_layout(self.Graph, seed=500556, k=0.3, iterations=20), 
         plt.show()
 
 

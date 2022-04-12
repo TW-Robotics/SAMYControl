@@ -1,13 +1,42 @@
 import time
 
 class Edge:
+
     def __init__(self, state):
         self.state = state
+        self.toCheck = []
 
+    def addToCheck(self, var, type, val):
+        self.toCheck.append((var, type, val))
 
-    def checkState(self, stateList):
-        return stateList[self.state]
+    def getToCheck(self):
+        return self.toCheck
 
+    def addRemovedEdge(self, toCheck=[]):
+        self.toCheck.extend(toCheck)
+
+    def ready(self, stateList, varList):
+        checked = True
+        for tuple in self.toCheck:
+            val = varList[tuple[0]]
+
+            if (tuple[1] == "smaller"):
+                checked = checked and val < tuple[2]
+            elif (tuple[1] == "smallerEqual"):
+                checked = checked and val <= tuple[2]
+            elif (tuple[1] == "greater"):
+                checked = checked and val > tuple[2]
+            elif (tuple[1] == "greaterEqual"):
+                checked = checked and val >= tuple[2]
+            else:
+                checked = False
+
+        return checked and stateList[self.state]
+
+    def __repr__(self):
+        if(len(self.toCheck) == 0):
+            return self.state
+        return str(self.toCheck) + ' && ' + self.state
 
 
 class Node:
@@ -27,7 +56,6 @@ class Node:
 
     def addRemovedNode(self, toUpdate=[]):
         self.toUpdate.extend(toUpdate)
-
 
     def addUpdate(self, var):
         self.toUpdate.append(var)

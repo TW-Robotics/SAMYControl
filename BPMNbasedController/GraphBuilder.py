@@ -23,6 +23,21 @@ class GraphBuilder:
 
         return self.G
 
+    def getStart(self):
+        element = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[2])[0]
+        return element.attributes['id'].value
+
+    def getContainer(self):
+        element = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[0])[0]
+        vars = {}
+
+        for var in element.getElementsByTagName('variables'):
+            name = var.attributes['name'].value
+            valEl = var.getElementsByTagName('values')[0]
+            val = int(valEl.attributes['value'].value)
+
+            vars[name] = val
+        return vars
 
     def initializeGraph(self):
         nodes = []
@@ -32,11 +47,10 @@ class GraphBuilder:
             for element in elements:
 
                 delay = int(element.attributes['delay'].value) if element.hasAttribute('delay') else 0
-
                 if(element.hasAttribute('name')):
-                    node = Node(element.attributes['name'].value)
+                    node = Node(element.attributes['name'].value, delay)
                 else:
-                    node = Node(element.attributes['id'].value)
+                    node = Node(element.attributes['id'].value, delay)
 
                 nodes.append((element.attributes['id'].value, {'obj': node}))
         return nodes
@@ -70,7 +84,6 @@ class GraphBuilder:
 
         for element in elements:
             id = element.attributes['id'].value
-            print('Loopback:' + id)
 
             outgoingNodes = list(self.G.successors(id))
             for outgoing in outgoingNodes:
@@ -84,14 +97,10 @@ class GraphBuilder:
 
         for element in elements:
             id = element.attributes['id'].value
-            print("ExclusiveGateway: " +  id)
 
             outgoingElements = element.getElementsByTagName('outgoing')
-            outgoingNodes = element.getElementsByTagName('outgoing')
-
             if(len(outgoingElements) > 1):
-
-                # Multiple exclusives not working?
+                # Multiple exclusives in succession not working?
                 for outgoing in element.getElementsByTagName('outgoing'):
                     outId = self.getChildValue(outgoing)
                     outNode = [i for i, v in self.G[id].items() if v["id"] == outId][0]
@@ -109,12 +118,10 @@ class GraphBuilder:
             self.combineEdges(id)
 
     def parseParallelGateway(self):
-        # ParallelGateway: one incoming && multiple outgoing; if otherwise ignore
         elements = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[8])
 
         for element in elements:
             id = element.attributes['id'].value
-            print('ParallelGateway: ' + id)
 
             incomingNodes = list(self.G.predecessors(id))
             if(len(incomingNodes) == 1):
@@ -130,7 +137,6 @@ class GraphBuilder:
 
         for element in elements:
             id = element.attributes['id'].value
-            print('VariableTable: ' + id)
             varManipulation = self.createVariableManipulationTable(element)
             if(varManipulation == None):
                 continue
@@ -153,7 +159,8 @@ class GraphBuilder:
         table = {}
         for i in range(len(childrenIn)):
             # Assumption: Keys are alwasy ordered!
-            table[childrenIn[i].attributes['value'].value] = childrenOut[i].attributes['value'].value
+            # Assumption: All ints
+            table[int(childrenIn[i].attributes['value'].value)] = int(childrenOut[i].attributes['value'].value)
 
         return VariableManipulationTable(var, table)
 

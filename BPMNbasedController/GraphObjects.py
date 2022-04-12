@@ -17,16 +17,17 @@ class Edge:
 
     def ready(self, stateList, varList):
         checked = True
+
         for tuple in self.toCheck:
             val = varList[tuple[0]]
 
             if (tuple[1] == "smaller"):
                 checked = checked and val < tuple[2]
-            elif (tuple[1] == "smallerEqual"):
+            elif (tuple[1] == "smallerEquals"):
                 checked = checked and val <= tuple[2]
             elif (tuple[1] == "greater"):
                 checked = checked and val > tuple[2]
-            elif (tuple[1] == "greaterEqual"):
+            elif (tuple[1] == "greaterEquals"):
                 checked = checked and val >= tuple[2]
             else:
                 checked = False
@@ -48,10 +49,10 @@ class Node:
 
     def getAction(self, vars):
         time.sleep(self.delay)
-
         for upd in self.toUpdate:
             upd.update(vars)
-        return self.action, vars
+
+        return self.action
 
 
     def addRemovedNode(self, toUpdate=[]):

@@ -6,12 +6,30 @@ from GraphBuilder import GraphBuilder
 
 class GraphPlanner:
 
-    def __init__(self, path, container):
+    def __init__(self, path):
         xmlDom = minidom.parse(path)
         defaultState = 'Ready'
         builder = GraphBuilder()
         self.Graph = builder.build(xmlDom, defaultState)
-        self.container = container
+
+        self.currentNode = builder.getStart()
+        self.container = builder.getContainer()
+
+        print('Starting at node: ' + self.currentNode)
+        print('Initialize variables with values: ' + str(self.container))
+
+    def checkNextEdges(self, states):
+        for key, val in self.Graph[self.currentNode].items():
+            if (val['obj'].ready(states, self.container)):
+                return key
+        return None
+
+    def run(self, states):
+        id = self.checkNextEdges(states)
+        if (id != None):
+            self.currentNode = id
+            return self.Graph.nodes[id]['obj'].getAction(self.container)
+        return None
 
     def drawGraph(self):
         plt.figure(figsize=(15,10))
@@ -31,10 +49,16 @@ class GraphPlanner:
             print(obj)
             print(obj.ready({'Ready': True}, {'object_count': 3}))
 
+    def testRun(self):
+        while(self.currentNode != 'stop'):
+            print(self.run({'Ready': True}))
+            print('Container: ' + str(self.container))
+            print('currentNode: ' + self.currentNode)
 
 if __name__ == '__main__':
-    container = {'object_count': '0'}
-    planner = GraphPlanner('../../Test_BPMN.diagram', container)
-    planner.drawGraph()
-    planner.testGetAction()
-    planner.testEdgeReady()
+    planner = GraphPlanner('../../Test_BPMN.diagram')
+
+    # planner.drawGraph()
+    # planner.testGetAction()
+    # planner.testEdgeReady()
+    planner.testRun()

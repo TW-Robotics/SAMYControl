@@ -12,24 +12,54 @@ class GraphPlanner:
         builder = GraphBuilder()
         self.Graph = builder.build(xmlDom, defaultState)
 
-        self.currentNode = builder.getStart()
+        self.currentNodes = [builder.getStart()]
+        self.endNode = builder.getEnd()
         self.container = builder.getContainer()
 
-        print('Starting at node: ' + self.currentNode)
+        print('Starting at node: ' + str(self.currentNodes))
         print('Initialize variables with values: ' + str(self.container))
 
     def checkNextEdges(self, states):
-        for key, val in self.Graph[self.currentNode].items():
-            if (val['obj'].ready(states, self.container)):
-                return key
-        return None
+        keys = []
+
+        # for currentNode in self.currentNodes:
+        #     for key, val in self.Graph[currentNode].items():
+        #         if (val['obj'].ready(states, self.container)):
+        #             keys.append(key)
+        #
+        # return keys
+
+        parallel = []
+        for currentNode in self.currentNodes:
+            for key, val in self.Graph[currentNode].items():
+                # print(key)
+                if(val['obj'].isParallel()):
+                    l = val['obj'].getParallel()
+                    if(l not in parallel):
+                        parallel.append(val['obj'].getParallel())
+                if (val['obj'].ready(states, self.container)):
+                    keys.append((currentNode, key))
+
+        if(len(parallel) > 0):
+            for i in range(len(parallel)):
+                if(not set(parallel[i]).issubset([x[0] for x in keys])):
+                    for p in parallel[i]:
+                        keys.pop(p, None)
+
+        return list(set([x[1] for x in keys]))
 
     def run(self, states):
-        id = self.checkNextEdges(states)
-        if (id != None):
-            self.currentNode = id
-            return self.Graph.nodes[id]['obj'].getAction(self.container)
+        ids = self.checkNextEdges(states)
+        self.currentNodes = []
+        # print(ids)
+        if (len(ids) > 0):
+            actions = []
+            for id in ids:
+                actions.append(self.Graph.nodes[id]['obj'].getAction(self.container))
+                self.currentNodes.append(id)
+            return actions
         return None
+
 
     def drawGraph(self):
         plt.figure(figsize=(15,10))
@@ -50,10 +80,11 @@ class GraphPlanner:
             print(obj.ready({'Ready': True}, {'object_count': 3}))
 
     def testRun(self):
-        while(self.currentNode != 'stop'):
+        while(self.endNode not in self.currentNodes):
+        # for i in range(10):
             print(self.run({'Ready': True}))
+            print('currentNode: ' + str(self.currentNodes))
             print('Container: ' + str(self.container))
-            print('currentNode: ' + self.currentNode)
 
 if __name__ == '__main__':
     planner = GraphPlanner('../../Test_BPMN.diagram')

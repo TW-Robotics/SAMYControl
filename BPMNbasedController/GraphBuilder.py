@@ -1,6 +1,6 @@
 import networkx as nx
 
-from GraphObjects import Edge, Node, VariableManipulationTable
+from GraphObjects import Edge, Node, VariableManipulationTable, VariableCondition
 
 class GraphBuilder:
 
@@ -27,6 +27,10 @@ class GraphBuilder:
         element = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[2])[0]
         return element.attributes['id'].value
 
+    def getEnd(self):
+        element = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[3])[0]
+        return element.attributes['id'].value
+
     def getContainer(self):
         element = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[0])[0]
         vars = {}
@@ -45,12 +49,10 @@ class GraphBuilder:
             elements = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[i])
 
             for element in elements:
-
-                delay = int(element.attributes['delay'].value) if element.hasAttribute('delay') else 0
                 if(element.hasAttribute('name')):
-                    node = Node(element.attributes['name'].value, delay)
+                    node = Node(element.attributes['name'].value)
                 else:
-                    node = Node(element.attributes['id'].value, delay)
+                    node = Node(element.attributes['id'].value)
 
                 nodes.append((element.attributes['id'].value, {'obj': node}))
         return nodes
@@ -71,11 +73,17 @@ class GraphBuilder:
         elements = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[1])
 
         for element in elements:
+            condition = None
             id = element.attributes['id'].value
             source = element.attributes['sourceRef'].value
             target = element.attributes['targetRef'].value
 
-            edges.append((source, target, {'id': id, 'obj': Edge(self.defaultState)}))
+            conditionElements = element.getElementsByTagName('condition')
+            if (len(conditionElements) > 0):
+                vals = [int(self.getChildValue(val)) for val in conditionElements]
+                condition = VariableCondition(vals)
+
+            edges.append((source, target, {'id': id, 'obj': Edge(self.defaultState, condition)}))
         return edges
 
     def parseLoopbackGateway(self):
@@ -100,16 +108,20 @@ class GraphBuilder:
 
             outgoingElements = element.getElementsByTagName('outgoing')
             if(len(outgoingElements) > 1):
+                keyVar = element.attributes['keyVariable'].value
+
                 # Multiple exclusives in succession not working?
                 for outgoing in element.getElementsByTagName('outgoing'):
                     outId = self.getChildValue(outgoing)
                     outNode = [i for i, v in self.G[id].items() if v["id"] == outId][0]
 
-                    var = outgoing.attributes['key'].value
-                    type = outgoing.attributes['type'].value
-                    val = int(outgoing.attributes['val'].value)
-
-                    self.G[id][outNode]['obj'].addToCheck(var, type, val)
+                    condition = self.G[id][outNode]['obj'].getInitialCondition()
+                    if condition:
+                        condition.setVariable(keyVar)
+                        self.G[id][outNode]['obj'].moveConditionToCheck()
+                    else:
+                        pass
+                        # Throw error, incorrect BPMN
 
             incomingNodes = list(self.G.predecessors(id))
             for incoming in incomingNodes:
@@ -126,6 +138,10 @@ class GraphBuilder:
             incomingNodes = list(self.G.predecessors(id))
             if(len(incomingNodes) == 1):
                 self.G.nodes[incomingNodes[0]]['obj'].addRemovedNode(self.G.nodes[id]['obj'].getUpdatable())
+            else:
+                for incoming in incomingNodes:
+                    self.G.edges[incoming, id]['obj'].setParallel(incomingNodes)
+
 
             self.combineEdges(id)
 
@@ -147,6 +163,7 @@ class GraphBuilder:
                 self.G.nodes[ingoing]['obj'].addRemovedNode(self.G.nodes[id]['obj'].getUpdatable())
                 self.G.nodes[ingoing]['obj'].addUpdate(varManipulation)
             self.combineEdges(id)
+
 
     def createVariableManipulationTable(self, element):
         vars = [var.attributes['name'].value for var in element.getElementsByTagName('in')]
@@ -173,8 +190,8 @@ class GraphBuilder:
             for outgoing in outgoingNodes:
                 # Change default state
                 self.G.add_edge(incoming, outgoing, id=id, obj=Edge(self.defaultState))
-                self.G.edges[incoming, outgoing]['obj'].addRemovedEdge(self.G[incoming][id]['obj'].getToCheck())
-                self.G.edges[incoming, outgoing]['obj'].addRemovedEdge(self.G[id][outgoing]['obj'].getToCheck())
+                self.G.edges[incoming, outgoing]['obj'].addRemovedEdge(self.G[incoming][id]['obj'].getToCheck(), self.G[incoming][id]['obj'].getParallel())
+                self.G.edges[incoming, outgoing]['obj'].addRemovedEdge(self.G[id][outgoing]['obj'].getToCheck(), self.G[id][outgoing]['obj'].getParallel())
 
         self.G.remove_node(id)
 

@@ -30,7 +30,6 @@ class Edge:
 
         for condition in self.toCheck:
             checked = condition.check(varList)
-
         return checked and stateList[self.state]
 
     def setParallel(self, nodes):
@@ -48,9 +47,14 @@ class Edge:
         return str(self.toCheck) + ' && ' + self.state
 
 
+class Skill:
+    def __init__(self, name, ressource):
+        self.name = name
+        self.ressource = ressource
+
 class Node:
-    def __init__(self, action):
-        self.action = action
+    def __init__(self, skillName, ressource=None):
+        self.skill = Skill(skillName, ressource)
         self.toUpdate = []
 
 
@@ -60,7 +64,7 @@ class Node:
         for upd in self.toUpdate:
             upd.update(vars)
 
-        return self.action
+        return self.skill
 
 
     def addRemovedNode(self, toUpdate=[]):
@@ -76,8 +80,8 @@ class Node:
 
     def __repr__(self):
         if(len(self.toUpdate) == 0):
-            return self.action
-        return str(self.toUpdate) + ' && ' + self.action
+            return self.skill.name
+        return str(self.toUpdate) + ' && ' + self.skill.name
 
 
 

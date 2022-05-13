@@ -1,6 +1,6 @@
 import networkx as nx
 
-from GraphObjects import Edge, Node, VariableManipulationTable, VariableCondition
+from .GraphObjects import Edge, Node, VariableManipulationTable, VariableCondition
 
 class GraphBuilder:
 
@@ -10,10 +10,11 @@ class GraphBuilder:
         self.defaultState = defaultState
         self.G = nx.DiGraph()
         self.dom = dom
+        self.states = set(['Start_' + self.defaultState])
 
         nodes = self.initializeGraph()
         self.G.add_nodes_from(nodes)
-        edges = self.parseTransitions(nodes)
+        edges = self.parseTransitions(self.G.nodes)
         self.G.add_edges_from(edges)
 
         self.parseExlusiveGateway()
@@ -30,6 +31,9 @@ class GraphBuilder:
     def getEnd(self):
         element = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[3])[0]
         return element.attributes['id'].value
+
+    def getStates(self):
+        return self.states
 
     def getContainer(self):
         element = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[0])[0]
@@ -50,7 +54,17 @@ class GraphBuilder:
 
             for element in elements:
                 if(element.hasAttribute('name')):
-                    node = Node(element.attributes['name'].value)
+                    skill = element.attributes['name'].value.split(':')
+
+                    if(len(skill) > 1):
+                        self.states.add(skill[0] + '_Ready')
+                        name = skill[1]
+                        ressource = skill[0]
+                    else:
+                        name = skill[0]
+                        ressource = None
+
+                    node = Node(name,ressource)
                 else:
                     node = Node(element.attributes['id'].value)
 
@@ -83,7 +97,12 @@ class GraphBuilder:
                 vals = [int(self.getChildValue(val)) for val in conditionElements]
                 condition = VariableCondition(vals)
 
-            edges.append((source, target, {'id': id, 'obj': Edge(self.defaultState, condition)}))
+            if(source != self.getStart()):
+                ressource = nodes[source]['obj'].skill.ressource
+            else:
+                ressource = 'Start'
+            state = (ressource + '_' if ressource else '') + self.defaultState
+            edges.append((source, target, {'id': id, 'obj': Edge(state, condition)}))
         return edges
 
     def parseLoopbackGateway(self):
@@ -188,8 +207,7 @@ class GraphBuilder:
 
         for incoming in incomingNodes:
             for outgoing in outgoingNodes:
-                # Change default state
-                self.G.add_edge(incoming, outgoing, id=id, obj=Edge(self.defaultState))
+                self.G.add_edge(incoming, outgoing, id=id, obj=Edge(self.G[incoming][id]['obj'].state))
                 self.G.edges[incoming, outgoing]['obj'].addRemovedEdge(self.G[incoming][id]['obj'].getToCheck(), self.G[incoming][id]['obj'].getParallel())
                 self.G.edges[incoming, outgoing]['obj'].addRemovedEdge(self.G[id][outgoing]['obj'].getToCheck(), self.G[id][outgoing]['obj'].getParallel())
 

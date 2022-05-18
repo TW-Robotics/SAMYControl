@@ -6,7 +6,7 @@ import pprint
 import ast
 from CRCL_DataTypes import *
 
-# ADD MIDDLEWARE TO THE SAMYCONTROL INTERFACE SO "PARTIAL" DATA TYPES IF A PARAMETERSETDATATYPE CAN BE USED AS REFERENCES. E.G, FOR A MOVETOPARAMETERSETDATATYPE (AKA A PARAMETER OF A MOVETO COMMAND IN A SKILL) A POSE CAN BE USED AS REFERENCE FOR EXAMPLE IN THE SAMYCORE DATABASE. 
+# ADD MIDDLEWARE TO THE SAMYCONTROL INTERFACE SO "PARTIAL" DATA TYPES IF A PARAMETERSETDATATYPE CAN BE USED AS REFERENCES. E.G, FOR A MOVETOPARAMETERSETDATATYPE (AKA A PARAMETER OF A MOVETO COMMAND IN A SKILL) A POSE CAN BE USED AS REFERENCE FOR EXAMPLE IN THE SAMYCORE DATABASE.
 #THE MIDDLEWARE TAKES THE TYPE OF THE PASSED/REFERED PARAMETER, COMPARES IT WITH THE TYPES THAT COMPOSE THE PARAMETERSETDATATYPE. IF THE DATATYPE OF THE EXTERNAL/PASSED PARAMETERS APPEARS AS A DATATYPE CONTAINED WITHIN THE PARAMETERSETDATATYPE, READS THE CURRENT VALUE OF THE PARAMETERSETDATATYPE, MODIFIES IT PARTIALLY (THE "PARTIAL" PARAMETER EXTERNALLY PASSED, FOR EXAMPLE THE POSE FOR A MOVETOPARAMETERSETDATATYPE), AND WRITES THE COMPLETE MODIFIED PARAMETERSETDATATYPE IN THE SAMYCORE.
 # THIS WAY IT IS MORE FLEXIBLE MODIFY THE PARAMETERSETDATATYPES AND MORE NATURAL AND REUSABLE THINGS CAN BE STORED IN THE DATABASE (POSES, SPEEDS, etc.)
 
@@ -17,10 +17,17 @@ class SAMYActionParameter(): # A class containing describing a parameter of an a
     def __init__(self, skillParameterNumber_, valueType_ , value_):
         self.skillParameterNumber = skillParameterNumber_ # The command targeted by this parameter within a skill
         self.valueType = valueType_ # "DataBaseReference" or Other (the self.value will be string that will require be translated into a CRCLCommandParameterSet)
-        self.value = value_ # The value of the parameter (can be a string than later on can be converted into a CRCLCommandParameterSet required by the 
-                            # skillParameterNumber using a CRCLCommandParameterSet that takes self.value as "metaparameter", 
+        self.value = value_ # The value of the parameter (can be a string than later on can be converted into a CRCLCommandParameterSet required by the
+                            # skillParameterNumber using a CRCLCommandParameterSet that takes self.value as "metaparameter",
                             # or the self.value can be a reference to an element in the SAMYCore database (the name of the parameter stored there)
 
+    def __repr__(self):
+        retval = "SAMY Parameter("
+        retval = retval + "Value: " + self.value
+        retval = retval + ", Value Type: " + self.valueType
+        retval = retval + ", Command Number: " + self.skillParameterNumber
+        retval = retval + ")"
+        return retval
 
 class SAMYAction: # A class describing a specific action to be performed by an agent
     def __init__(self, agentName_, skillName_, params_ = []):
@@ -32,7 +39,8 @@ class SAMYAction: # A class describing a specific action to be performed by an a
         retval = "\n-----------SAMYAction-----------\n"
         retval = retval + "Agent name: " + self.agentName + "\n"
         retval = retval + "Skill name: " + self.skillName + "\n"
-        retval = "--------------------------------\n\n"
+        retval = retval + "Parameter: " + str(self.params) + "\n"
+        retval = retval +  "--------------------------------\n\n"
         return retval
 
 
@@ -74,7 +82,7 @@ class SAMYAgent:
 
 
 # Object passed to the subscription. It calls to the required control function of the controller when the relevant variables (the state varibles of the controller) change
-class ControllerStateChangeHandler(object): 
+class ControllerStateChangeHandler(object):
     """
     Subscription Handler. When the value of a relevant variable change (hence the controlled system state changes) or an event is thrown, the methods of this class are called
     """
@@ -108,10 +116,10 @@ class ControllerStateChangeHandler(object):
         pass
 
 
-# SAMYControlInterface offers a simple control interface for controlling the system through the SAMYCore. 
+# SAMYControlInterface offers a simple control interface for controlling the system through the SAMYCore.
 # The only interface requeriment for the control function passed to SAMYControlInterface is being a function that takes one parameter, the system state in a standard form
-# (an array of numerical and categorical values in the order specified in controlStateVariablesNames_), and returns a (valid) SAMYSystemAction 
-# (which is the next action to be performed). Everything else is handled internally. 
+# (an array of numerical and categorical values in the order specified in controlStateVariablesNames_), and returns a (valid) SAMYSystemAction
+# (which is the next action to be performed). Everything else is handled internally.
 # The standard control function of the controller class (described in the previous lines) is passed as the standardControlCb_ in the arguments when instantiated.
 class SAMYControlInterface():
     def __init__(self, samyCoreAddress_, controlStateVariablesNames_, standardControlCb_, serializeToStandardOutput_ = False  ):
@@ -120,12 +128,12 @@ class SAMYControlInterface():
             raise RuntimeError(string)
         self.samyCoreAddress = samyCoreAddress_
         self.client = Client(self.samyCoreAddress)
-        self.auxClient = Client(self.samyCoreAddress) # we need a second client when controlling, 
+        self.auxClient = Client(self.samyCoreAddress) # we need a second client when controlling,
                                                       # in order to be able to read the complete new state (all the variables) within the subscription callback of the first client
         self.controlStateVariablesNames = controlStateVariablesNames_ # Array containing the names of the variables that define a controller state
         self.standardControlCb = standardControlCb_ # A callback that takes the system state in a standard form and returns a (valid) SAMYSystemAction
-        self.serializeToStandardOutput = serializeToStandardOutput_ # When marked as true, the self.readSytemState function 
-                                                                    # "flattens out" the structure into an array of strings, integers and floats, 
+        self.serializeToStandardOutput = serializeToStandardOutput_ # When marked as true, the self.readSytemState function
+                                                                    # "flattens out" the structure into an array of strings, integers and floats,
                                                                     # which it is considered the standard representation of a state
 
         # The following attributes require connecting and inspecting the SAMYCore
@@ -134,9 +142,9 @@ class SAMYControlInterface():
         self.infoSources = {} # Dict of SAMYInformationSources in the system
         self.systemStateNodeIds = {} # Dictionary containing ALL the nodes in the SAMYCore that describe the system (all the children of SAMYCore SystemStatus node)
         self.controlStateVariablesNodesIds = [] # Array containing the nodesIds of the variables that define a controller state
-        self.controlStateVariablesDataTypesNodesIds = [] # Array containing the nodes ids of the data types of the controller state variables, 
+        self.controlStateVariablesDataTypesNodesIds = [] # Array containing the nodes ids of the data types of the controller state variables,
                                                          # so we can flatten the structures to an array and reconstruct the structures
-        self.systemState = [] # The array of values describing the state of the system required by a controller 
+        self.systemState = [] # The array of values describing the state of the system required by a controller
                               # in the form of integers, strings and floats (standard controller state representation)
         self.controllerStateChangeHandler = ControllerStateChangeHandler( self.readSytemState, self.standardControlCb, self.executeSystemAction )
         self.connectToServerAndSetControllingInterface()
@@ -167,7 +175,7 @@ class SAMYControlInterface():
                raise RuntimeError(string)
 
 
-#    def updateSystemState(self, varNodeId, newValue): Possible alternative a readSytemState and the additional requeriment of and auxClient. 
+#    def updateSystemState(self, varNodeId, newValue): Possible alternative a readSytemState and the additional requeriment of and auxClient.
 #  Only the var that thrown the callback would be modified or all? Check
 #        self.systemState[self.controlStateVariablesNodesIds.index(varNodeId)] = newValue
 #        return self.systemState
@@ -191,7 +199,7 @@ class SAMYControlInterface():
                raise RuntimeError(string)
         self.systemState = state
         return self.systemState
-            
+
 
     def executeSystemAction(self, systemAction):
         print('|||||||||||||||||||||||||   Actions requested to SAMYCore   |||||||||||||||||||||||||\n')
@@ -232,7 +240,7 @@ class SAMYControlInterface():
             done = True
 
         # Try to find if the skill's command parameter set (CRCLCommandParametersSetDataType) contains a field of the type of the given node in the DataBase. If so, it uses it for the first possible field
-        if( done == False ): 
+        if( done == False ):
             dataBaseValueTypeName = type(dataBaseValue).__name__
             skillParamTypes = getattr(skillParamValue, "ua_types")
             for nameAndTypeTuple in skillParamTypes : # skillParamTypes = type.ua_types = [(FieldName, TypeName), (FieldName, TypeName), ...]
@@ -293,7 +301,7 @@ class SAMYControlInterface():
                         (not "CurrentState" in auxArray and not "LastTransition" in auxArray) ): # Robot_RobotName_Skill_SkillName
                             self.extractSkillNodeId(auxArray, node)
                             self.systemStateNodeIds[str(node.get_browse_name().Name)] = node.get_value()
-                    elif( (not "Skill" in auxArray) and 
+                    elif( (not "Skill" in auxArray) and
                           ("nextSkillNodeId" in auxArray or "Position" in auxArray or "CRCLStatus" in auxArray  or "CurrentState" in auxArray  or "LastTransition" in auxArray  or "ExecutedSkills" in auxArray) ): # Robot_RobotName_nextSkillNodeId
                             self.extractRobotVariable(auxArray, node)
                             self.systemStateNodeIds[str(node.get_browse_name().Name)] = node.get_value()
@@ -311,11 +319,11 @@ class SAMYControlInterface():
              self.agents[nameArray[1]].skills[nameArray[3]].lastTransitionNodeId = node.get_value()
 
 
-    def extractSkillParametersVariables(self, nameArray, node): # Robot_RobotName_Skill_SkillName_Parameter_Number_CommandParameterType 
+    def extractSkillParametersVariables(self, nameArray, node): # Robot_RobotName_Skill_SkillName_Parameter_Number_CommandParameterType
            skill = self.agents[nameArray[1]].skills.get(nameArray[3])
            if( skill == None ):
                  self.agents[nameArray[1]].skills[nameArray[3]] = SAMYSkill(nameArray[3])
-                   
+
            self.agents[nameArray[1]].skills[nameArray[3]].parametersNodesIds[nameArray[5]] = node.get_value()
 
 
@@ -323,7 +331,7 @@ class SAMYControlInterface():
            skill = self.agents[nameArray[1]].skills.get(nameArray[3])
            if( skill == None ):
                  self.agents[nameArray[1]].skills[nameArray[3]] = SAMYSkill(nameArray[3])
-                   
+
            self.agents[nameArray[1]].skills[nameArray[3]].skillNodeId = node.get_value()
 
 
@@ -352,7 +360,7 @@ class SAMYControlInterface():
         for var in self.controlStateVariablesNames:
             try:
                # We get from SAMYCore SystemStatus Node the underlying variable node that represents that state "dimension"
-               self.controlStateVariablesNodesIds.append( self.systemStateNodeIds[var] ) 
+               self.controlStateVariablesNodesIds.append( self.systemStateNodeIds[var] )
             except:
                string = 'The given variable name ' + var + ' is not a children of SAMYCore SystemStatus node. '
                string = string + 'This might be due to an error when using the naming convention. Capital letters matter. Please review it.'
@@ -372,13 +380,13 @@ class SAMYControlInterface():
         browsePath = ["0:Objects", dataBaseBrowseName, paramQualifiedName]
         auxNode = None
         try:
-            auxNode = rootNode.get_child(browsePath) 
+            auxNode = rootNode.get_child(browsePath)
         except:
             print("Not found browsepath: ", browsePath)
             string = 'The parameter in the database ' + paramQualifiedName + ' could not be found. This could be due to an error in the naming.'
             self.client.disconnect()
             self.auxClient.disconnect()
-            raise RuntimeError(string)  
+            raise RuntimeError(string)
         value = auxNode.get_value()
         return rootNode.get_child(browsePath)
 
@@ -398,7 +406,7 @@ class SAMYControlInterface():
         systemStatusNode = None
         for child in childrenNodes:
             if child.get_browse_name().Name == 'SystemStatus':
-               systemStatusNode = child 
+               systemStatusNode = child
                break
         if( systemStatusNode == None ):
             string = 'The SAMYCore does not have the expected structure. SystemStatus node is missing.'
@@ -418,7 +426,7 @@ class SAMYControlInterface():
 
     def readAndPrintSystemStatus(self):
             for key in self.systemStateNodeIds:
-                auxNode = self.client.get_node(self.systemStateNodeIds[key])  
+                auxNode = self.client.get_node(self.systemStateNodeIds[key])
                 nextSkillNodeId = auxNode.get_value()
                 print(key,'-----------------------------------------------------------------')
                 print(nextSkillNodeId)
@@ -440,5 +448,3 @@ class SAMYControlInterface():
                 val = param.get_value()
                 print(param.get_browse_name())
                 print(type(val))
-
-

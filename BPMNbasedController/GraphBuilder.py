@@ -35,6 +35,7 @@ class GraphBuilder:
     def getStates(self):
         return self.states
 
+
     def getContainer(self):
         element = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[0])[0]
         vars = {}
@@ -47,6 +48,7 @@ class GraphBuilder:
             vars[name] = val
         return vars
 
+
     def initializeGraph(self):
         nodes = []
         for i in range(2, len(GraphBuilder.Types)):
@@ -55,6 +57,7 @@ class GraphBuilder:
             for element in elements:
                 if(element.hasAttribute('name')):
                     skill = element.attributes['name'].value.split(':')
+                    skillParam = self.processSkillParams(element.getElementsByTagName('param'))
 
                     if(len(skill) > 1):
                         self.states.add(skill[0] + '_Ready')
@@ -64,12 +67,25 @@ class GraphBuilder:
                         name = skill[0]
                         ressource = None
 
-                    node = Node(name,ressource)
+                    node = Node(name, ressource, skillParam)
                 else:
                     node = Node(element.attributes['id'].value)
 
                 nodes.append((element.attributes['id'].value, {'obj': node}))
         return nodes
+
+
+    def processSkillParams(self, paramDom):
+        params = []
+        for param in paramDom:
+            if ('key' not in param.attributes):
+                raise Exception('The command targeted by this parameter within a skill must be defined')
+
+            key = param.attributes['key'].value
+            value = self.getChildValue(param)
+            params.append((key, value))
+
+        return params
 
 
     def parseProcesses(self):
@@ -81,6 +97,7 @@ class GraphBuilder:
             for element in elements:
                 nodes.append(element.attributes['id'].value)
         return nodes
+
 
     def parseTransitions(self, nodes):
         edges = []
@@ -105,6 +122,7 @@ class GraphBuilder:
             edges.append((source, target, {'id': id, 'obj': Edge(state, condition)}))
         return edges
 
+
     def parseLoopbackGateway(self):
         # LoopbackGateway: multiple incoming && one outgoing
         elements = self.dom.getElementsByTagName('SamyBpmnModel:' + GraphBuilder.Types[7])
@@ -117,6 +135,7 @@ class GraphBuilder:
                 self.G.nodes[outgoing]['obj'].addRemovedNode(self.G.nodes[id]['obj'].getUpdatable())
 
             self.combineEdges(id)
+
 
     def parseExlusiveGateway(self):
         # ExclusiveGateway: multiple incoming && one outgoing || one incoming && multiple outgoing

@@ -396,16 +396,16 @@
     <incoming>trans_id_19</incoming>
     <outgoing>trans_id_3</outgoing>
   </SamyBpmnModel:LoopbackGateway>
-  <SamyBpmnModel:Process id="place_id_4" name="Robot:Move">
+  <SamyBpmnModel:Process id="place_id_4" name="Robot:MoveSkill">
     <incoming>trans_id_3</incoming>
     <outgoing>trans_id_21</outgoing>
-    <param>MoveToPick</param>
+    <param key='1'>MoveToPick</param>
   </SamyBpmnModel:Process>
-  <SamyBpmnModel:Process id="place_id_7" name="Robot:Gripper approach">
+  <SamyBpmnModel:Process id="place_id_7" name="Robot:GripperApproach">
     <incoming>trans_id_21</incoming>
     <outgoing>trans_id_22</outgoing>
   </SamyBpmnModel:Process>
-  <SamyBpmnModel:Process id="place_id_9" name="Robot:Gripper attach">
+  <SamyBpmnModel:Process id="place_id_9" name="Robot:GripperAttach">
     <incoming>trans_id_22</incoming>
     <outgoing>trans_id_10</outgoing>
   </SamyBpmnModel:Process>
@@ -414,23 +414,25 @@
     <outgoing>trans_id_11</outgoing>
     <outgoing>trans_id_12</outgoing>
   </SamyBpmnModel:ExclusiveGateway>
-  <SamyBpmnModel:Process id="place_id_11" name="Robot:Move">
+  <SamyBpmnModel:Process id="place_id_11" name="Robot:MoveSkill">
     <incoming>trans_id_11</incoming>
     <outgoing>trans_id_20</outgoing>
-    <param>MoveToBoxLeft</param>
+    <param key="1">MoveToBoxLeft</param>
   </SamyBpmnModel:Process>
-  <SamyBpmnModel:Process id="place_id_12" name="Robot:Move box right">
+  <SamyBpmnModel:Process id="place_id_12" name="Robot:MoveSkill">
     <incoming>trans_id_12</incoming>
     <outgoing>trans_id_13</outgoing>
+    <param key='1'>MoveToBoxRight</param>
   </SamyBpmnModel:Process>
   <SamyBpmnModel:ExclusiveGateway id="place_id_13">
     <incoming>trans_id_13</incoming>
     <incoming>trans_id_20</incoming>
     <outgoing>trans_id_15</outgoing>
   </SamyBpmnModel:ExclusiveGateway>
-  <SamyBpmnModel:Process id="place_id_14" name="Robot:Move Place">
+  <SamyBpmnModel:Process id="place_id_14" name="Robot:MoveSkill">
     <incoming>trans_id_15</incoming>
     <outgoing>trans_id_16</outgoing>
+    <param key="1">MoveToPlace</param>
   </SamyBpmnModel:Process>
   <SamyBpmnModel:ExclusiveGateway id="place_id_15" keyVariable="object_count">
     <incoming>trans_id_16</incoming>

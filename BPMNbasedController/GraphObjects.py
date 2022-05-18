@@ -48,13 +48,14 @@ class Edge:
 
 
 class Skill:
-    def __init__(self, name, ressource):
+    def __init__(self, name, ressource, param):
         self.name = name
         self.ressource = ressource
+        self.param = param
 
 class Node:
-    def __init__(self, skillName, ressource=None):
-        self.skill = Skill(skillName, ressource)
+    def __init__(self, skillName, ressource=None, param=[]):
+        self.skill = Skill(skillName, ressource, param)
         self.toUpdate = []
 
 

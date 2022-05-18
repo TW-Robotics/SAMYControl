@@ -76,9 +76,11 @@ class BPMNbasedController(SAMYControllerBase):
         return self.graphPlanner.run(internalState)
 
 
-    # TODO
     def parseParams(self, action):
-        return []
+        samyParams = []
+        for param in action.param:
+            samyParams.append(SAMYActionParameter(param[0], 'DataBaseReference' ,param[1]))
+        return samyParams
 
 
     def internalSystemActionToStandardSystemAction(self, internalAction):

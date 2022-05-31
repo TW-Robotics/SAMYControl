@@ -2,7 +2,7 @@ import yaml
 
 from SAMYControlInterface import *
 from abc import ABC
-from SAMYControllerBase import SAMYControllerBase
+from SAMYControlInterface import SAMYControllerBase
 
 from .GraphPlanner import GraphPlanner
 

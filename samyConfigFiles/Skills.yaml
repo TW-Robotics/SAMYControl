@@ -1,0 +1,16 @@
+FundamentalSkills: # Fundamental skills are only composed by CRCL commands
+   - FundamentalSkill:
+         SkillName: GripperApproach
+         CRCLCommands:
+             - MoveTo
+   - FundamentalSkill:
+         SkillName: GripperAttach
+         CRCLCommands:
+             - MoveTo
+             - SetEndeffector
+   - FundamentalSkill:
+         SkillName: MoveSkill
+         CRCLCommands:
+             - MoveTo          
+
+

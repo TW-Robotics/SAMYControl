@@ -1,0 +1,18 @@
+InformationSources:
+  - InformationSource:
+      InformationSourceName: "CameraReady"
+      DataTypes:
+             - Boolean
+  - InformationSource:
+      InformationSourceName: "LightBarrierSensor"
+      DataTypes:
+             - Boolean
+  - InformationSource:
+      InformationSourceName: "DistanceSensor"
+      DataTypes:
+             - Double
+  - InformationSource:
+      InformationSourceName: "InductiveSensor"
+      DataTypes:
+             - Boolean
+

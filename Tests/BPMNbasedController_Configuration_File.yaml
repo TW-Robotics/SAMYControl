@@ -1,16 +1,16 @@
 States:
   Camera_Ready:
-    key: Information_Source_..
+    key: Information_Source_CameraReady
     type: Boolean
     values:
     - true
-  Robot_Ready:
-    key: Robot_RobotUR5_CurrentState
-    type: String
+  RobotUR5_Ready:
+    key: 'Robot_RobotUR5_CurrentState'
+    type: 'String'
     values:
-    - Idle
+     - Ready
   Start_Ready:
     key: Robot_RobotUR5_CurrentState
     type: String
     values:
-    - Idle
+    - Ready

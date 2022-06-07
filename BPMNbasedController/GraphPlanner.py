@@ -66,8 +66,10 @@ class GraphPlanner:
 
 
     def run(self, states):
-        if(self.currentNodes == None):
+        if (self.currentNodes == None):
             raise Exception('Planner not started!')
+        elif (self.endNode in self.currentNodes):
+            return []
 
         ids = self.checkNextEdges(states)
 
@@ -75,9 +77,10 @@ class GraphPlanner:
             self.currentNodes = []
             actions = []
             for id in ids:
-                actions.append(self.Graph.nodes[id]['obj'].getAction(self.container))
+                if (id != self.endNode):
+                    actions.append(self.Graph.nodes[id]['obj'].getAction(self.container))
+                    
                 self.currentNodes.append(id)
-            print(self.container)
             return actions
         return []
 

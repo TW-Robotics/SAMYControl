@@ -8,50 +8,59 @@ sys.path.append(PROJECT_PATH)
 from BPMNbasedController import BPMNbasedController
 from SAMYControlInterface import SAMYControlInterface
 
-bpmnPath = PROJECT_PATH + '/Tests/Test_BPMN_no_parallel.diagram'
-configPath = PROJECT_PATH + '/Tests/BPMNbasedController_Configuration_File.yaml'
+if __name__ == "__main__":
 
-print("Initialize BPMNBasedController .... \n")
-controller = BPMNbasedController.BPMNbasedController(bpmnPath, configPath)
-controller.setupController()
-print("Finished setup BPMNBasedController.\n")
+    if len(sys.argv) < 3:
+        print("To few arguments:")
+        print("<address of SAMYCore> <port of SAMYCore>")
+        sys.exit(1)
 
-print("SystemStatusControlVariableNames\n")
-print(controller.getSystemStatusControlVariablesNames())
+    addres = "opc.tcp://" + str(sys.argv[1]) + ":" + str(sys.argv[2])
 
-# Create instance of SAMYControlInterface
-print("Initialize SAMYControlInterface ....\n")
-interface = SAMYControlInterface("opc.tcp://localhost:4840", controller.getSystemStatusControlVariablesNames(), controller.standardControlCallback)
+    bpmnPath = PROJECT_PATH + '/Tests/Test_BPMN_no_parallel.diagram'
+    configPath = PROJECT_PATH + '/Tests/BPMNbasedController_Configuration_File.yaml'
 
-# print("standardControlCallback\n")
-# systemAction = controller.standardControlCallback(["Ready", "Ready"])
-# for action in systemAction.individualActions:
-#     print(action)
-# print(controller.standardControlCallback(["Ready", "Ready"]))
-print("Starting SAYMControl ...\n")
-interface.startSystemControl()
+    print("Initialize BPMNBasedController .... \n")
+    controller = BPMNbasedController.BPMNbasedController(bpmnPath, configPath)
+    controller.setupController()
+    print("Finished setup BPMNBasedController.\n")
 
-#print(controller.getSystemStatusControlVariablesNames())
-#print(controller.standardStateToInternalState(['Idle', 'Idle']))
-#skill = controller.standardControlCallback(['Idle', 'Idle'])
+    print("SystemStatusControlVariableNames\n")
+    print(controller.getSystemStatusControlVariablesNames())
 
-# if(len(skill.individualActions) > 0):
-#     print(skill.individualActions[0])
-# else:
-#     print('No Skill returned')
+    # Create instance of SAMYControlInterface
+    print("Initialize SAMYControlInterface ....\n")
+    interface = SAMYControlInterface(addres, controller.getSystemStatusControlVariablesNames(), controller.standardControlCallback)
 
-# print(controller.standardStateToInternalState(['Moving', 'Moving']))
-# skill = controller.standardControlCallback(['Moving', 'Moving'])
+    # print("standardControlCallback\n")
+    # systemAction = controller.standardControlCallback(["Ready", "Ready"])
+    # for action in systemAction.individualActions:
+    #     print(action)
+    # print(controller.standardControlCallback(["Ready", "Ready"]))
+    print("Starting SAYMControl ...\n")
+    interface.startSystemControl()
 
-# if(len(skill.individualActions) > 0):
-#     print(skill.individualActions[0])
-# else:
-#     print('No Skill returned')
+    #print(controller.getSystemStatusControlVariablesNames())
+    #print(controller.standardStateToInternalState(['Idle', 'Idle']))
+    #skill = controller.standardControlCallback(['Idle', 'Idle'])
 
-# for i in range(10):
-#     skill = controller.standardControlCallback(['Idle', 'Idle'])
+    # if(len(skill.individualActions) > 0):
+    #     print(skill.individualActions[0])
+    # else:
+    #     print('No Skill returned')
 
-#     if(len(skill.individualActions) > 0):
-#         print(skill.individualActions[0])
-#     else:
-#         print('No Skill returned')
+    # print(controller.standardStateToInternalState(['Moving', 'Moving']))
+    # skill = controller.standardControlCallback(['Moving', 'Moving'])
+
+    # if(len(skill.individualActions) > 0):
+    #     print(skill.individualActions[0])
+    # else:
+    #     print('No Skill returned')
+
+    # for i in range(10):
+    #     skill = controller.standardControlCallback(['Idle', 'Idle'])
+
+    #     if(len(skill.individualActions) > 0):
+    #         print(skill.individualActions[0])
+    #     else:
+    #         print('No Skill returned')

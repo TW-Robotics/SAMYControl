@@ -404,6 +404,7 @@
   <SamyBpmnModel:Process id="place_id_7" name="RobotUR5:GripperApproach">
     <incoming>trans_id_21</incoming>
     <outgoing>trans_id_22</outgoing>
+    <param key="1">MoveToBoxLeft</param>
   </SamyBpmnModel:Process>
   <SamyBpmnModel:Process id="place_id_9" name="RobotUR5:GripperAttach">
     <incoming>trans_id_22</incoming>

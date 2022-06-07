@@ -1,7 +1,32 @@
 DataBase:
 - !!python/object:CRCL_DataTypes.MoveToParametersSetDataType
   RealTimeParameter: false
-  Name: MoveToPick
+  Name: MoveToPickLeft
+  MoveStraight: false
+  EndPosition: !!python/object:CRCL_DataTypes.CRCL_PoseDataType
+    id: 0
+    name: Null
+    point: !!python/object:CRCL_DataTypes.CRCL_PointDataType
+      id: 0
+      name: Null
+      x: 0.0
+      y: 0.3
+      z: 0.15
+    xAxis: !!python/object:CRCL_DataTypes.CRCL_VectorDataType
+      id: 0
+      name: Null
+      i: -1
+      j: 0
+      k: 0
+    zAxis: !!python/object:CRCL_DataTypes.CRCL_VectorDataType
+      id: 0
+      name: Null
+      i: 0
+      j: 0
+      k: -1
+- !!python/object:CRCL_DataTypes.MoveToParametersSetDataType
+  RealTimeParameter: false
+  Name: MoveToPickRight
   MoveStraight: false
   EndPosition: !!python/object:CRCL_DataTypes.CRCL_PoseDataType
     id: 0
@@ -35,6 +60,31 @@ DataBase:
       id: 0
       name: Null
       x: -0.1
+      y: 0.3
+      z: 0.15
+    xAxis: !!python/object:CRCL_DataTypes.CRCL_VectorDataType
+      id: 0
+      name: Null
+      i: -1
+      j: 0
+      k: 0
+    zAxis: !!python/object:CRCL_DataTypes.CRCL_VectorDataType
+      id: 0
+      name: Null
+      i: 0
+      j: 0
+      k: -1
+- !!python/object:CRCL_DataTypes.MoveToParametersSetDataType
+  Name: MoveToBoxRight
+  RealTimeParameter: false
+  MoveStraight: false
+  EndPosition: !!python/object:CRCL_DataTypes.CRCL_PoseDataType
+    id: 0
+    name: Null
+    point: !!python/object:CRCL_DataTypes.CRCL_PointDataType
+      id: 0
+      name: Null
+      x: -0.2
       y: 0.3
       z: 0.15
     xAxis: !!python/object:CRCL_DataTypes.CRCL_VectorDataType

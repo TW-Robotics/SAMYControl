@@ -2,16 +2,16 @@ Robots:
   - Robot:
       Name: RobotUR5
       ID: 12344
-      Address: "10.0.0.27"
+      Address: "192.168.0.101"
       OPCUARoboticsFile: RobotUR5.xml
       Skills:
         - MoveSkill
         - GripperApproach
         - GripperAttach
       Workobject:
-        - 0.3
-        - 0.0
-        - 0.2
+        - -0.12
+        - -0.4
+        - 0.15
         - 0.0
         - 0.0
         - -1.57

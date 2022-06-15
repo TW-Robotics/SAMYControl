@@ -160,7 +160,7 @@ flowchart LR
 2. predict(internalState) -> returns a system-action in internal representation, given a state in internal representation
 3. internalSystemActionToStandardSystemAction(internalAction) -> returns a standard system-action, given a system-action in internal representation
 
-SAMYControllerBase abstractly DEFINES these three functions (they cannot be pre-implemented, since they are XXXXX dependent), so XXXXXbasedController must implement them. What these three functions do is selfexplanatory.
+SAMYControllerBase abstractly DECLARES these three functions (they cannot be pre-implemented, since they are XXXXX dependent), so XXXXXbasedController must implement them. What these three functions do is selfexplanatory.
 
 Additionally, SAMYControllerBase IMPLEMENTS the so called "standardControlCallback" using these three functions.
 This "standardControlCallback(standardSystemState)" function is the function automatically called by the SAMYControlInterface every time the system state changes.

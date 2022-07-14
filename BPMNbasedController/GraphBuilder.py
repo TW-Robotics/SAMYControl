@@ -82,8 +82,9 @@ class GraphBuilder:
                 raise Exception('The command targeted by this parameter within a skill must be defined')
 
             key = param.attributes['key'].value
+            sourceType = param.attributes["type"].value
             value = self.getChildValue(param)
-            params.append((key, value))
+            params.append((key, sourceType, value))
 
         return params
 

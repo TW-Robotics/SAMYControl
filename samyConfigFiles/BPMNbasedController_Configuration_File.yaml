@@ -1,9 +1,4 @@
 States:
-  Camera_Ready:
-    key: Information_Source_CameraReady
-    type: Boolean
-    values:
-    - true
   RobotUR5_Ready:
     key: 'Robot_RobotUR5_CurrentState'
     type: 'String'

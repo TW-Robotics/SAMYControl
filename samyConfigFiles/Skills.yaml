@@ -12,6 +12,16 @@ FundamentalSkills: # Fundamental skills are only composed by CRCL commands
    - FundamentalSkill:
          SkillName: MoveSkill
          CRCLCommands:
-             - MoveTo          
+             - MoveTo      
+   - FundamentalSkill:
+         SkillName: GetPose
+         CRCLCommands:
+             - GetStatus  
+ComplexSkills: # Complex Skills can use previously defined fundamental and complex skills
+  - ComplexSkill:
+      SkillName: PickSkill
+      CRCLCommands_And_PreviousSkills:
+        - GripperApproach # Move robot to start position
+        - GripperAttach # Pick part
 
 

@@ -77,9 +77,15 @@ class BPMNbasedController(SAMYControllerBase):
 
 
     def parseParams(self, action):
+        print("Printing internal action\n")
+        print(action.ressource)
+        print(action.param)
         samyParams = []
         for param in action.param:
-            samyParams.append(SAMYActionParameter(param[0], 'DataBaseReference' ,param[1]))
+            if param[1] == "data":
+                samyParams.append(SAMYActionParameter(param[0], 'DataBaseReference' ,param[2]))
+            elif param[1] == "info":
+                samyParams.append(SAMYActionParameter(param[0], 'InformationSourceReference' ,param[2]))
         return samyParams
 
 

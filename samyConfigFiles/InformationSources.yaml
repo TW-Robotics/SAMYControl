@@ -1,7 +1,12 @@
 InformationSources:
   - InformationSource:
+      InformationSourceName: "CameraPose"
+      DataTypes:
+             - MoveToParametersSetDataType
+  - InformationSource:
       InformationSourceName: "CameraReady"
       DataTypes:
+             - Boolean
              - Boolean
   - InformationSource:
       InformationSourceName: "LightBarrierSensor"
@@ -15,4 +20,5 @@ InformationSources:
       InformationSourceName: "InductiveSensor"
       DataTypes:
              - Boolean
+
 

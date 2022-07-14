@@ -16,7 +16,7 @@ from .CRCL_DataTypes import *
 class SAMYActionParameter(): # A class containing describing a parameter of an action
     def __init__(self, skillParameterNumber_, valueType_ , value_):
         self.skillParameterNumber = skillParameterNumber_ # The command targeted by this parameter within a skill
-        self.valueType = valueType_ # "DataBaseReference" or Other (the self.value will be string that will require be translated into a CRCLCommandParameterSet)
+        self.valueType = valueType_ # "DataBaseReference"/"InformationSourceReference" or Other (the self.value will be string that will require be translated into a CRCLCommandParameterSet)
         self.value = value_ # The value of the parameter (can be a string than later on can be converted into a CRCLCommandParameterSet required by the 
                             # skillParameterNumber using a CRCLCommandParameterSet that takes self.value as "metaparameter", 
                             # or the self.value can be a reference to an element in the SAMYCore database (the name of the parameter stored there)
@@ -219,6 +219,12 @@ class SAMYControlInterface():
                     dataBaseNode = self.getDataBaseParameter(parameter.value)
                     agentSkillParamNode = self.auxClient.get_node( skill.parametersNodesIds[str(int(parameter.skillParameterNumber)-1)] )
                     self.smartParameterSetting( agentSkillParamNode, dataBaseNode )
+                elif(parameter.valueType == 'InformationSourceReference'):
+                    informationSourceNode = self.getInformationSourceParameter(parameter.value)
+                    agentSkillParamNode = self.auxClient.get_node( skill.parametersNodesIds[str(int(parameter.skillParameterNumber)-1)] )
+####### HINT: A method for setting agentSkillParamNode (probbably similar to the first lines of smartParameterSetting
+                    self.smartParameterSetting( agentSkillParamNode, informationSourceNode )
+
             skillNode = self.auxClient.get_node( skill.skillNodeId )
             skillNode.call_method("0:Start")
         else:
@@ -383,6 +389,24 @@ class SAMYControlInterface():
         except:
             print("Not found browsepath: ", browsePath)
             string = 'The parameter in the database ' + paramQualifiedName + ' could not be found. This could be due to an error in the naming.'
+            self.client.disconnect()
+            self.auxClient.disconnect()
+            raise RuntimeError(string)  
+        value = auxNode.get_value()
+        return rootNode.get_child(browsePath)
+    
+    def getInformationSourceParameter(self, parameterName):
+        rootNode = self.auxClient.get_root_node()
+        infoSourceNS = str(self.namespaces['http://SAMY.org/InformationSources'])
+        infoSourceBrowseName = infoSourceNS + ':InformationSources'
+        paramQualifiedName =  infoSourceNS + ':' + parameterName
+        browsePath = ["0:Objects", infoSourceBrowseName, paramQualifiedName, paramQualifiedName + "_0"] # TODO Add handling of multiple parameters
+        auxNode = None
+        try:
+            auxNode = rootNode.get_child(browsePath) 
+        except:
+            print("Not found browsepath: ", browsePath)
+            string = 'The parameter in the information sources ' + paramQualifiedName + ' could not be found. This could be due to an error in the naming.'
             self.client.disconnect()
             self.auxClient.disconnect()
             raise RuntimeError(string)  

@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from xml.dom import minidom
+import numpy as np
 
 from .GraphBuilder import GraphBuilder
 
@@ -32,37 +33,29 @@ class GraphPlanner:
 
 
     def checkNextEdges(self, states):
-        keys = []
+        edges = {}
+        parallel = []
 
         for currentNode in self.currentNodes:
             for key, val in self.Graph[currentNode].items():
                 if (val['obj'].ready(states, self.container)):
-                    keys.append(key)
+                    if(currentNode not in edges.keys()):
+                        edges[currentNode] = [key]
+                    else:
+                        edges[currentNode].append(key)
 
+                    if(val['obj'].isParallel() and val['obj'].getParallel() not in parallel):
+                        parallel.append(val['obj'].getParallel())
+
+        while (len(parallel) > 0):
+            nodes = parallel.pop(0)
+
+            if (not all(x in edges.keys() for x in nodes)):
+                for node in nodes:
+                    edges.pop(node, None)
+
+        keys = np.unique(list(edges.values()))
         return keys
-
-        # INCORRECT - How work with parallel
-        # parallel = []
-        # for currentNode in self.currentNodes:
-        #     for key, val in self.Graph[currentNode].items():
-        #         # print(key)
-        #         if(val['obj'].isParallel()):
-        #             l = val['obj'].getParallel()
-        #             if(l not in parallel):
-        #                 parallel.append(val['obj'].getParallel())
-        #         if (val['obj'].ready(states, self.container)):
-        #             keys.append((currentNode, key))
-        #
-        # print(parallel)
-        # if(len(parallel) > 0):
-        #     for i in range(len(parallel)):
-        #         if(not set(parallel[i]).issubset([x[0] for x in keys])):
-        #             for p in parallel[i]:
-        #                 if p in keys: keys.remove(p)
-        # print(keys)
-
-
-        return list(set([x[1] for x in keys]))
 
 
     def run(self, states):
@@ -79,7 +72,7 @@ class GraphPlanner:
             for id in ids:
                 if (id != self.endNode):
                     actions.append(self.Graph.nodes[id]['obj'].getAction(self.container))
-                    
+
                 self.currentNodes.append(id)
             return actions
         return []

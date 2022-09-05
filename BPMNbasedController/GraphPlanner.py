@@ -34,7 +34,7 @@ class GraphPlanner:
 
     def checkNextEdges(self, states):
         edges = {}
-        parallel = []
+        parallel = {}
 
         for currentNode in self.currentNodes:
             for key, val in self.Graph[currentNode].items():
@@ -44,14 +44,16 @@ class GraphPlanner:
                     else:
                         edges[currentNode].append(key)
 
-                    if(val['obj'].isParallel() and val['obj'].getParallel() not in parallel):
-                        parallel.append(val['obj'].getParallel())
+                    if(val['obj'].isParallel() and val['obj'].getParallel() not in parallel.values()):
+                        parallel[currentNode] = val['obj'].getParallel()
 
         while (len(parallel) > 0):
-            nodes = parallel.pop(0)
+            nodes = parallel.popitem()
 
-            if (not all(x in edges.keys() for x in nodes)):
-                for node in nodes:
+            if(not (nodes[1] in edges.values() or all(x in edges.keys() for x in nodes[1]))):
+                for node in nodes[1]:
+                    if (node in edges[nodes[0]]):
+                        edges[nodes[0]].remove(node)
                     edges.pop(node, None)
 
         keys = np.unique(list(edges.values()))

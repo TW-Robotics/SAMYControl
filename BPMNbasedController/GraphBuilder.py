@@ -22,6 +22,7 @@ class GraphBuilder:
         self.parseLoopbackGateway()
         self.parseParallelGateway()
 
+        self.updateStartState()
         return self.G
 
     def getStart(self):
@@ -117,9 +118,9 @@ class GraphBuilder:
 
             if(source != self.getStart()):
                 ressource = nodes[source]['obj'].skill.ressource
+                state = (ressource + '_' if ressource else '') + self.defaultState
             else:
-                ressource = 'Start'
-            state = (ressource + '_' if ressource else '') + self.defaultState
+                state = 'Start'
             edges.append((source, target, {'id': id, 'obj': Edge(state, condition)}))
         return edges
 
@@ -175,8 +176,12 @@ class GraphBuilder:
             id = element.attributes['id'].value
 
             incomingNodes = list(self.G.predecessors(id))
-            if(len(incomingNodes) == 1):
+            if(len(incomingNodes) == 1 or self.getStart() in incomingNodes):
+                outgoingNodes = list(self.G.successors(id))
                 self.G.nodes[incomingNodes[0]]['obj'].addRemovedNode(self.G.nodes[id]['obj'].getUpdatable())
+
+                for outgoing in outgoingNodes:
+                    self.G.edges[id, outgoing]['obj'].setParallel(outgoingNodes)
             else:
                 for incoming in incomingNodes:
                     self.G.edges[incoming, id]['obj'].setParallel(incomingNodes)
@@ -184,6 +189,12 @@ class GraphBuilder:
 
             self.combineEdges(id)
 
+    def updateStartState(self):
+        start = self.getStart()
+
+        for outgoing in list(self.G.successors(start)):
+            ressource = self.G.nodes[outgoing]['obj'].skill.ressource
+            self.G.edges[start, outgoing]['obj'].state = ressource + '_' + self.defaultState
 
     def parseVariableTable(self):
         # VariableManipulationTable: one incoming & one outgoing

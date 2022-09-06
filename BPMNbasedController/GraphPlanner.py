@@ -24,8 +24,11 @@ class GraphPlanner:
         return self.states
 
 
-    def start(self):
+    def start(self, infoSources):
         self.currentNodes = [self.startNode]
+
+        for source in infoSources:
+            self.initContainer[source] = None
         self.container = self.initContainer
 
         print('Starting at node: ' + str(self.currentNodes))
@@ -64,6 +67,7 @@ class GraphPlanner:
         if (self.currentNodes == None):
             raise Exception('Planner not started!')
         elif (self.endNode in self.currentNodes):
+            print('BPMN finished successfully!')
             return []
 
         ids = self.checkNextEdges(states)

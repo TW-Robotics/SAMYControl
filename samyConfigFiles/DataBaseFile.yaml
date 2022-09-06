@@ -166,3 +166,10 @@ DataBase:
       fraction: 1
       fractionMax: 0
       fractionMin: 0
+  - !!python/object:CRCL_DataTypes.SetEndeffectorParametersSetDataType
+    RealTimeParameter: false
+    Name: OpenGripper
+    Setting: !!python/object:CRCL_DataTypes.CRCL_FractionDataType
+      fraction: 0
+      fractionMax: 0
+      fractionMin: 0

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SamyBpmnModel="http://www.example.org/SamyBpmnModel" xmlns:al="http://eclipse.org/graphiti/mm/algorithms" xmlns:pi="http://eclipse.org/graphiti/mm/pictograms">
+  <pi:Diagram visible="true" gridUnit="10" diagramTypeId="SamyBpmn L1" name="newDiagram" snapToGrid="true" pictogramLinks="/0/@children.0/@link /0/@children.1/@link /0/@children.2/@link /0/@children.3/@link /0/@children.4/@link /0/@connections.0/@link /0/@connections.1/@link /0/@connections.2/@link /0/@children.5/@link /0/@connections.3/@link /0/@connections.4/@link" version="0.17.0">
+    <graphicsAlgorithm xsi:type="al:Rectangle" background="/0/@colors.1" foreground="/0/@colors.0" lineWidth="1" transparency="0.0" width="1000" height="1000"/>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:Image" lineWidth="1" transparency="0.0" width="-1" height="-1" x="180" y="250" id="start" stretchH="false" stretchV="false" proportional="false"/>
+      <link businessObjects="/1"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.3"/>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:Image" lineWidth="1" transparency="0.0" width="-1" height="-1" x="440" y="250" id="loopback_gateway" stretchH="false" stretchV="false" proportional="false"/>
+      <link businessObjects="/2"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.0" incomingConnections="/0/@connections.3 /0/@connections.4"/>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.1" foreground="/0/@colors.2" lineWidth="3" filled="true" transparency="0.0" width="170" height="130" x="648" y="30" cornerHeight="20" cornerWidth="20"/>
+      <link businessObjects="/3"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.2" incomingConnections="/0/@connections.0"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="170" height="130" y="-14" font="/0/@fonts.4" horizontalAlignment="ALIGNMENT_CENTER" value="RobotUR5:PickAndPlaceSkill"/>
+      </children>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="170" height="130" y="45" font="/0/@fonts.3" horizontalAlignment="ALIGNMENT_CENTER" value="T = 0"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:Image" lineWidth="1" transparency="0.0" width="87" height="87" x="689" y="496" id="exclusive_gateway" stretchH="false" stretchV="false" proportional="false"/>
+      <link businessObjects="/4"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.1 /0/@connections.4" incomingConnections="/0/@connections.2"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="87" height="87" y="15" font="/0/@fonts.3" horizontalAlignment="ALIGNMENT_CENTER" value="{ object_count }"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:Image" lineWidth="1" transparency="0.0" width="-1" height="-1" x="1080" y="496" id="end" stretchH="false" stretchV="false" proportional="false"/>
+      <link businessObjects="/5"/>
+      <anchors xsi:type="pi:ChopboxAnchor" incomingConnections="/0/@connections.1"/>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.1" foreground="/0/@colors.2" lineWidth="3" lineStyle="DASH" filled="true" transparency="0.0" width="170" height="100" x="97" y="460" cornerHeight="10" cornerWidth="10"/>
+      <link businessObjects="/9"/>
+      <anchors xsi:type="pi:ChopboxAnchor"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="150" height="80" x="10" y="10" font="/0/@fonts.3" verticalAlignment="ALIGNMENT_TOP" value=""/>
+      </children>
+    </children>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.1/@anchors.0" end="/0/@children.2/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="3" lineStyle="UNSPECIFIED"/>
+      <link businessObjects="/6"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polygon" background="/0/@colors.2" foreground="/0/@colors.2" lineWidth="3" filled="true" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points x="1"/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+      <connectionDecorators visible="true" active="true" locationRelative="true" location="0.5">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.3" lineWidth="1" filled="false" transparency="0.0" font="/0/@fonts.3" value=""/>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.3/@anchors.0" end="/0/@children.4/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="3" lineStyle="UNSPECIFIED"/>
+      <link businessObjects="/7"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polygon" background="/0/@colors.2" foreground="/0/@colors.2" lineWidth="3" filled="true" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points x="1"/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+      <connectionDecorators visible="true" active="true" locationRelative="true" location="0.5">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.3" lineWidth="1" filled="false" transparency="0.0" font="/0/@fonts.3" value="10"/>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.2/@anchors.0" end="/0/@children.3/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="3" lineStyle="UNSPECIFIED"/>
+      <link businessObjects="/8"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polygon" background="/0/@colors.2" foreground="/0/@colors.2" lineWidth="3" filled="true" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points x="1"/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+      <connectionDecorators visible="true" active="true" locationRelative="true" location="0.5">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.3" lineWidth="1" filled="false" transparency="0.0" font="/0/@fonts.3" value=""/>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.0/@anchors.0" end="/0/@children.1/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="3" lineStyle="UNSPECIFIED"/>
+      <link businessObjects="/10"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polygon" background="/0/@colors.2" foreground="/0/@colors.2" lineWidth="3" filled="true" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points x="1"/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+      <connectionDecorators visible="true" active="true" locationRelative="true" location="0.5">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.3" lineWidth="1" filled="false" transparency="0.0" font="/0/@fonts.3" value=""/>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.3/@anchors.0" end="/0/@children.1/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="3" lineStyle="UNSPECIFIED"/>
+      <link businessObjects="/11"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polygon" background="/0/@colors.2" foreground="/0/@colors.2" lineWidth="3" filled="true" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points x="1"/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+      <connectionDecorators visible="true" active="true" locationRelative="true" location="0.5">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.3" lineWidth="1" filled="false" transparency="0.0" font="/0/@fonts.3" value=""/>
+      </connectionDecorators>
+    </connections>
+    <colors red="227" green="238" blue="249"/>
+    <colors red="255" green="255" blue="255"/>
+    <colors/>
+    <colors red="255"/>
+    <fonts name="Arial" size="20" bold="true"/>
+    <fonts name="Arial" size="12" italic="true"/>
+    <fonts name="Arial" size="8"/>
+    <fonts name="Arial" size="10" italic="true"/>
+    <fonts name="Arial" size="12"/>
+  </pi:Diagram>
+  <SamyBpmnModel:Start id="place_id_1">
+    <outgoing>trans_id_21</outgoing>
+  </SamyBpmnModel:Start>
+  <SamyBpmnModel:LoopbackGateway id="place_id_3">
+    <incoming>trans_id_21</incoming>
+    <incoming>trans_id_22</incoming>
+    <outgoing>trans_id_3</outgoing>
+  </SamyBpmnModel:LoopbackGateway>
+  <SamyBpmnModel:Process id="place_id_4" name="Robot:PickAndPlaceSkill">
+    <incoming>trans_id_3</incoming>
+    <outgoing>trans_id_20</outgoing>
+    <param key="1" type="data" >OpenGripper</param>
+    <param key="6" type="data" >CloseGripper</param>
+    <param key="10" type="data" >MoveToPickAbove</param>
+    <param key="12" type="data" >MoveToPick</param>
+    <param key="13" type="data" >OpenGripper</param>
+    <param key="15" type="data" >MoveToPickAbove</param>
+    <param key="17" type="data" >MoveToHome</param>
+  </SamyBpmnModel:Process>
+  <SamyBpmnModel:ExclusiveGateway id="place_id_15" keyVariable="object_count">
+    <incoming>trans_id_20</incoming>
+    <outgoing>trans_id_17</outgoing>
+    <outgoing>trans_id_22</outgoing>
+  </SamyBpmnModel:ExclusiveGateway>
+  <SamyBpmnModel:End id="place_id_16">
+    <incoming>trans_id_17</incoming>
+  </SamyBpmnModel:End>
+  <SamyBpmnModel:Transition id="trans_id_3" sourceRef="place_id_3" targetRef="place_id_4"/>
+  <SamyBpmnModel:Transition id="trans_id_17" sourceRef="place_id_15" targetRef="place_id_16">
+    <condition>5</condition>
+  </SamyBpmnModel:Transition>
+  <SamyBpmnModel:Transition id="trans_id_20" sourceRef="place_id_4" targetRef="place_id_15"/>
+  <SamyBpmnModel:VariableContainer id="v_cont_id_1"/>
+  <SamyBpmnModel:Transition id="trans_id_21" sourceRef="place_id_1" targetRef="place_id_3"/>
+  <SamyBpmnModel:Transition id="trans_id_22" sourceRef="place_id_15" targetRef="place_id_3">
+    <condition>0</condition>
+    <condition>1</condition>
+    <condition>2</condition>
+    <condition>3</condition>
+    <condition>4</condition>
+  </SamyBpmnModel:Transition>
+</xmi:XMI>

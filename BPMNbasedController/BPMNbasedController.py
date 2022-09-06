@@ -18,19 +18,26 @@ class BPMNbasedController(SAMYControllerBase):
 
     def setupController(self):
         if(self.configPath):
-            with open(self.configPath) as file:
-                self.statesMapper = yaml.load(file, Loader=yaml.FullLoader).get('States', None)
-
-                if(self.statesMapper == None):
-                    raise Exception('Config File has incorrect Form!')
-                elif(not self.checkStateMapping()):
-                    raise Exception('Not all States in Config File; Please Update!')
+            self.loadMapper()
         else:
             self.statesMapper = {}
+            self.infoSourceMapper = {}
             self.checkStateMapping()
             raise Exception('Config File missing; Please Update!')
 
-        self.graphPlanner.start()
+        self.graphPlanner.start(self.infoSourceMapper.keys())
+
+
+    def loadMapper(self):
+        with open(self.configPath) as file:
+            dict = yaml.load(file, Loader=yaml.FullLoader)
+            self.statesMapper = dict.get('States', None)
+            self.infoSourceMapper = dict.get('InformationSources', {})
+
+            if(self.statesMapper == None):
+                raise Exception('Config File has incorrect Form!')
+            elif(not self.checkStateMapping()):
+                raise Exception('Not all States in Config File; Please Update!')
 
 
     def checkStateMapping(self):
@@ -52,6 +59,8 @@ class BPMNbasedController(SAMYControllerBase):
         for state in self.graphPlanner.getStates():
             systemStatus.append(self.statesMapper[state]['key'])
 
+        for source in self.infoSourceMapper.values():
+            systemStatus.append(source['key'])
         return systemStatus
 
 
@@ -65,6 +74,12 @@ class BPMNbasedController(SAMYControllerBase):
 
         for i in range(len(states)):
             internalStates[states[i]] = standardState[i] in self.statesMapper[states[i]]['values']
+
+        infoSources = list(self.infoSourceMapper.keys())
+        for i in range(len(self.infoSourceMapper)):
+            # TODO: Check type; only int and boolean is working;
+            internalStates[infoSources[i]] = int(standardState[len(states) + i])
+
         return internalStates
 
 

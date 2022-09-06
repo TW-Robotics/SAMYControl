@@ -10,7 +10,7 @@ class GraphBuilder:
         self.defaultState = defaultState
         self.G = nx.DiGraph()
         self.dom = dom
-        self.states = set(['Start_' + self.defaultState])
+        self.states = set()
 
         nodes = self.initializeGraph()
         self.G.add_nodes_from(nodes)

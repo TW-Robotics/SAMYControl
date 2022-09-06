@@ -8,38 +8,48 @@ class Edge:
         self.parallel = []
         self.initialCondition = condition
 
+
     def moveConditionToCheck(self):
         self.toCheck.append(self.initialCondition)
         self.initialCondition = None
 
+
     def addToCheck(self, varCondition):
         self.toCheck.append(varCondition)
+
 
     def getToCheck(self):
         return self.toCheck
 
+
     def getInitialCondition(self):
         return self.initialCondition
+
 
     def addRemovedEdge(self, toCheck=[], parallel=[]):
         self.toCheck.extend(toCheck)
         self.parallel.extend(parallel)
 
+
     def ready(self, stateList, varList):
         checked = True
 
         for condition in self.toCheck:
-            checked = condition.check(varList)
+            checked = condition.check(stateList, varList)
         return checked and stateList[self.state]
+
 
     def setParallel(self, nodes):
         self.parallel = nodes
 
+
     def isParallel(self):
         return len(self.parallel) > 0
 
+
     def getParallel(self):
         return self.parallel
+
 
     def __repr__(self):
         if(len(self.toCheck) == 0):
@@ -53,6 +63,7 @@ class Skill:
         self.ressource = ressource
         self.param = param
 
+
 class Node:
     def __init__(self, skillName, ressource=None, param=[]):
         self.skill = Skill(skillName, ressource, param)
@@ -60,8 +71,6 @@ class Node:
 
 
     def getAction(self, vars):
-        # print("Before " + self.action)
-        # print("Done " + self.action)
         for upd in self.toUpdate:
             upd.update(vars)
 
@@ -70,6 +79,7 @@ class Node:
 
     def addRemovedNode(self, toUpdate=[]):
         self.toUpdate.extend(toUpdate)
+
 
     def addUpdate(self, var):
         self.toUpdate.append(var)
@@ -120,9 +130,12 @@ class VariableCondition:
         if not self.var:
             self.var = var
 
-    def check(self, vars):
+    def check(self, states, vars):
         check = True
         val = vars[self.var]
+        if(val == None):
+            val = states[self.var]
+
         return val in self.table
 
     def __str__(self):

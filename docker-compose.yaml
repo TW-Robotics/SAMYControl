@@ -1,0 +1,23 @@
+version: "3.3"
+services:
+  core:
+    image: core
+    ports:
+      - 4840:4840 
+    volumes:
+      - ./samyConfigFiles:/usr/src/samy/configFiles
+  ur5:
+    image: ur5-plugin
+    command: python3 main.py core RobotUR5
+    tty: true
+    volumes:
+      - ./samyConfigFiles:/usr/src/samy/configFiles
+  controller:
+    image: bpmn-controller
+    command: python3 Tests/startBPMNController.py core Test_BPMN_no_parallel.diagram BPMNbasedController_Configuration_File.yaml
+    tty: true
+    volumes:
+      - ./samyConfigFiles:/usr/src/samy/configFiles
+
+volumes:
+  samy-conf:

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from SAMYControlInterface import *
+from .SAMYControlInterface import *
 
 class SAMYControllerBase(ABC):
 

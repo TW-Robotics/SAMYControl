@@ -4,7 +4,7 @@ import time
 import sys
 import pprint
 import ast
-from CRCL_DataTypes import *
+from .CRCL_DataTypes import *
 
 # ADD MIDDLEWARE TO THE SAMYCONTROL INTERFACE SO "PARTIAL" DATA TYPES IF A PARAMETERSETDATATYPE CAN BE USED AS REFERENCES. E.G, FOR A MOVETOPARAMETERSETDATATYPE (AKA A PARAMETER OF A MOVETO COMMAND IN A SKILL) A POSE CAN BE USED AS REFERENCE FOR EXAMPLE IN THE SAMYCORE DATABASE. 
 #THE MIDDLEWARE TAKES THE TYPE OF THE PASSED/REFERED PARAMETER, COMPARES IT WITH THE TYPES THAT COMPOSE THE PARAMETERSETDATATYPE. IF THE DATATYPE OF THE EXTERNAL/PASSED PARAMETERS APPEARS AS A DATATYPE CONTAINED WITHIN THE PARAMETERSETDATATYPE, READS THE CURRENT VALUE OF THE PARAMETERSETDATATYPE, MODIFIES IT PARTIALLY (THE "PARTIAL" PARAMETER EXTERNALLY PASSED, FOR EXAMPLE THE POSE FOR A MOVETOPARAMETERSETDATATYPE), AND WRITES THE COMPLETE MODIFIED PARAMETERSETDATATYPE IN THE SAMYCORE.
@@ -16,11 +16,18 @@ from CRCL_DataTypes import *
 class SAMYActionParameter(): # A class containing describing a parameter of an action
     def __init__(self, skillParameterNumber_, valueType_ , value_):
         self.skillParameterNumber = skillParameterNumber_ # The command targeted by this parameter within a skill
-        self.valueType = valueType_ # "DataBaseReference" or Other (the self.value will be string that will require be translated into a CRCLCommandParameterSet)
+        self.valueType = valueType_ # "DataBaseReference"/"InformationSourceReference" or Other (the self.value will be string that will require be translated into a CRCLCommandParameterSet)
         self.value = value_ # The value of the parameter (can be a string than later on can be converted into a CRCLCommandParameterSet required by the 
                             # skillParameterNumber using a CRCLCommandParameterSet that takes self.value as "metaparameter", 
                             # or the self.value can be a reference to an element in the SAMYCore database (the name of the parameter stored there)
 
+    def __str__(self):
+        retval = "\n----------SAMYActionParameter----------\n"
+        retval = retval + "\nskillParameterNumber = " + str(self.skillParameterNumber)
+        retval = retval + "\nvalueType = " + str(self.valueType)
+        retval = retval + "\nvalue = " + str(self.value)
+        retval = retval + "\n--------------------------------\n\n"
+        return retval
 
 class SAMYAction: # A class describing a specific action to be performed by an agent
     def __init__(self, agentName_, skillName_, params_ = []):
@@ -32,7 +39,7 @@ class SAMYAction: # A class describing a specific action to be performed by an a
         retval = "\n-----------SAMYAction-----------\n"
         retval = retval + "Agent name: " + self.agentName + "\n"
         retval = retval + "Skill name: " + self.skillName + "\n"
-        retval = "--------------------------------\n\n"
+        retval = retval + "--------------------------------\n\n"
         return retval
 
 
@@ -210,8 +217,14 @@ class SAMYControlInterface():
             for parameter in action.params: # Writes all the parameters of the skill
                 if(parameter.valueType == 'DataBaseReference'):
                     dataBaseNode = self.getDataBaseParameter(parameter.value)
-                    agentSkillParamNode = self.auxClient.get_node( skill.parametersNodesIds[parameter.skillParameterNumber] )
+                    agentSkillParamNode = self.auxClient.get_node( skill.parametersNodesIds[str(int(parameter.skillParameterNumber)-1)] )
                     self.smartParameterSetting( agentSkillParamNode, dataBaseNode )
+                elif(parameter.valueType == 'InformationSourceReference'):
+                    informationSourceNode = self.getInformationSourceParameter(parameter.value)
+                    agentSkillParamNode = self.auxClient.get_node( skill.parametersNodesIds[str(int(parameter.skillParameterNumber)-1)] )
+####### HINT: A method for setting agentSkillParamNode (probbably similar to the first lines of smartParameterSetting
+                    self.smartParameterSetting( agentSkillParamNode, informationSourceNode )
+
             skillNode = self.auxClient.get_node( skill.skillNodeId )
             skillNode.call_method("0:Start")
         else:
@@ -381,6 +394,24 @@ class SAMYControlInterface():
             raise RuntimeError(string)  
         value = auxNode.get_value()
         return rootNode.get_child(browsePath)
+    
+    def getInformationSourceParameter(self, parameterName):
+        rootNode = self.auxClient.get_root_node()
+        infoSourceNS = str(self.namespaces['http://SAMY.org/InformationSources'])
+        infoSourceBrowseName = infoSourceNS + ':InformationSources'
+        paramQualifiedName =  infoSourceNS + ':' + parameterName
+        browsePath = ["0:Objects", infoSourceBrowseName, paramQualifiedName, paramQualifiedName + "_0"] # TODO Add handling of multiple parameters
+        auxNode = None
+        try:
+            auxNode = rootNode.get_child(browsePath) 
+        except:
+            print("Not found browsepath: ", browsePath)
+            string = 'The parameter in the information sources ' + paramQualifiedName + ' could not be found. This could be due to an error in the naming.'
+            self.client.disconnect()
+            self.auxClient.disconnect()
+            raise RuntimeError(string)  
+        value = auxNode.get_value()
+        return rootNode.get_child(browsePath)
 
 
     def getNamespaces(self):
@@ -440,5 +471,3 @@ class SAMYControlInterface():
                 val = param.get_value()
                 print(param.get_browse_name())
                 print(type(val))
-
-

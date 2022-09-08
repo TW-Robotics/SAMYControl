@@ -1,0 +1,16 @@
+States:
+  Robot_Ready:
+    key: 'Robot_RobotUR5_CurrentState'
+    type: 'String'
+    values:
+     - Ready
+  Camera_Ready:
+    key: 'Camera_CurrentState'
+    type: 'String'
+    values:
+     - Ready
+
+InformationSources:
+  object_count:
+    key: "InformationSource_Sensor10_0"
+    type: Boolean

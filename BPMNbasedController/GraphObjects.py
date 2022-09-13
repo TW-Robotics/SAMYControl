@@ -32,6 +32,9 @@ class Edge:
 
 
     def ready(self, stateList, varList):
+        if (not self.state):
+            return False
+
         checked = True
 
         for condition in self.toCheck:

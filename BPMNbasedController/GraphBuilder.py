@@ -193,8 +193,12 @@ class GraphBuilder:
         start = self.getStart()
 
         for outgoing in list(self.G.successors(start)):
-            ressource = self.G.nodes[outgoing]['obj'].skill.ressource
-            self.G.edges[start, outgoing]['obj'].state = ressource + '_' + self.defaultState
+            if(self.G.nodes[outgoing]['obj'].skill.ressource):
+                ressource = self.G.nodes[outgoing]['obj'].skill.ressource
+                self.G.edges[start, outgoing]['obj'].state = ressource + '_' + self.defaultState
+            else:
+                # Only possible if direct transition between start and end
+                self.G.edges[start, outgoing]['obj'].state = None
 
     def parseVariableTable(self):
         # VariableManipulationTable: one incoming & one outgoing

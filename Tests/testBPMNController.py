@@ -28,6 +28,9 @@ if __name__ == "__main__":
     print("SystemStatusControlVariableNames\n")
     print(controller.getSystemStatusControlVariablesNames())
 
+    # Print System Control Variable Names
+    print(controller.getSystemStatusControlVariablesNames())
+
     # Create instance of SAMYControlInterface
     print("Initialize SAMYControlInterface ....\n")
     interface = SAMYControlInterface(addres, controller.getSystemStatusControlVariablesNames(), controller.standardControlCallback)

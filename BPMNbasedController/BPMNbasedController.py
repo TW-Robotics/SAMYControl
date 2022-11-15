@@ -42,6 +42,7 @@ class BPMNbasedController(SAMYControllerBase):
 
     def checkStateMapping(self):
         missingStates = list(set(self.graphPlanner.getStates()) - set(self.statesMapper.keys()))
+        print(f"The missing states are: {missingStates}")
 
         if(len(missingStates) == 0):
             return True

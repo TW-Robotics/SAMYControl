@@ -9,7 +9,7 @@ import yaml
 from BPMNbasedController import BPMNbasedController
 from SAMYControlInterface import SAMYControlInterface
 from SAMYControlInterface import DataBaseWriter
-from SAMYControlInterface import CRCL_DataTypes
+
 
 class Settings():
     def __init__(self):

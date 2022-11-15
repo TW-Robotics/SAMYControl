@@ -3,16 +3,21 @@ import sys, os
 PROJECT_PATH = os.getcwd()
 sys.path.append(PROJECT_PATH)
 import logging
-import time
 
 from opcua import Client
-from opcua import ua
+from opcua import ua 
 import random
 from pprint import pprint
 
-from .CRCL_DataTypes import *
+#import CRCL_DataTypes
+
+#from .CRCL_DataTypes import *
 
 import yaml
+
+class Double(float):
+    def __init__(self):
+        self.name = "name"
 
 class DataBaseWriter():
     def __init__(self, addres_, port_, filename_):
@@ -24,28 +29,35 @@ class DataBaseWriter():
         try:
             self.client.connect()
             self.client.load_type_definitions()
+            dataBase = None
+
             
             # Open the file and load the database
-            dataBase = self.loadDataBaseFile()
+            with open(self.filename) as f:
+                dataBase = yaml.load(f, yaml.Loader)
+
+            #double = ua.MoveToParamsSetDataType()
+            #print(yaml.dump(double))
+
             dataBaseNode = self.getDataBaseNode()
+            dataBaseNodes = dataBaseNode.get_children()
             dataBaseNS = dataBaseNode.get_browse_name().NamespaceIndex
 
-            elementsCounter = 0
             for elem in dataBase['DataBase']:
-                print(type(elem))
-                pprint(elem)
+                #print(type(elem))
+                #pprint(elem)
                 auxStr = None
                 if hasattr(elem, 'name'):
-                    print("Found name element.\n")
+                    #print("Found name element.\n")
                     auxStr = str(dataBaseNS) + ':' + elem.name
                 elif hasattr(elem, 'Name'):
-                    print("Found name element.\n")
+                    #print("Found name element.\n")
                     auxStr = str(dataBaseNS) + ':' + elem.Name
 
-                print("auxStr: " + str(auxStr))
+                #print("auxStr: " + str(auxStr))
                 serverDataBaseNode = dataBaseNode.get_child(auxStr)
-                serverDataBaseNode.set_value(elem)
-                elementsCounter = elementsCounter + 1       
+                #print(serverDataBaseNode.get_value())
+                serverDataBaseNode.set_value(elem)      
         finally:
             self.client.disconnect()
 

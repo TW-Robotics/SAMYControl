@@ -57,7 +57,7 @@ if __name__ == "__main__":
     print("\nWriting DataBase succesful.\n")
 
     
-    addres = "opc.tcp://" + str(sys.argv[1]) + ":" + str(samy_core_port)
+    address = "opc.tcp://" + str(sys.argv[1]) + ":" + str(samy_core_port)
 
     bpmnPath = settings.settings_path + sys.argv[2]
     configPath = settings.settings_path + sys.argv[3]
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     # Create instance of SAMYControlInterface
     print("Initialize SAMYControlInterface ....\n")
-    interface = SAMYControlInterface(addres, controller.getSystemStatusControlVariablesNames(), controller.standardControlCallback)
+    interface = SAMYControlInterface(address, controller.getSystemStatusControlVariablesNames(), controller.standardControlCallback)
 
     print("Starting SAYMControl ...\n")
     interface.startSystemControl()

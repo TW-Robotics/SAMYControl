@@ -66,6 +66,14 @@ class Skill:
         self.ressource = ressource
         self.param = param
 
+    def __str__(self):
+        retval = "\n----------BPMNSkill----------\n"
+        retval = retval + "\nname = " + str(self.name)
+        retval = retval + "\nressource = " + str(self.ressource)
+        retval = retval + "\nparam = " + str(self.param)
+        retval = retval + "\n--------------------------------\n\n"
+        return retval
+
 
 class Node:
     def __init__(self, skillName, ressource=None, param=[]):

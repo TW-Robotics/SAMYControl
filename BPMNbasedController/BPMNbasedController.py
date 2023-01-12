@@ -94,8 +94,7 @@ class BPMNbasedController(SAMYControllerBase):
 
     def parseParams(self, action):
         print("Printing internal action\n")
-        print(action.ressource)
-        print(action.param)
+        print(action)
         samyParams = []
         for param in action.param:
             if param[1] == "data":
@@ -105,12 +104,25 @@ class BPMNbasedController(SAMYControllerBase):
         return samyParams
 
 
+    def performAction(self, action):
+        if action.name == "WriteInformationSource":
+            print("Found controller action")
+            for param in action.param:
+                print(param)
+
+
     def internalSystemActionToStandardSystemAction(self, internalAction):
         """
         This function converts the internal representation of the system-action into the standard system-action representation (returns a SAMYSystemAction)
         """
         samyActions = []
         for action in internalAction:
+            # TODO add check if action can be performed by Controller itself and run the action if that is the case
+            
+            if action.ressource == "Controller":
+                print(action)
+                self.performAction(action)
+                continue
             params = self.parseParams(action)
             samyActions.append(SAMYAction(action.ressource, action.name, params))
 

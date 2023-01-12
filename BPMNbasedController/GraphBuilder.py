@@ -83,14 +83,15 @@ class GraphBuilder:
                 raise Exception('The command targeted by this parameter within a skill must be defined')
 
             key = param.attributes['key'].value
-            sourceType = param.attributes["type"].value
-            value = self.getChildValue(param)
-            params.append((key, sourceType, value))
+            if ("type" in param.attributes):
+                sourceType = param.attributes["type"].value
+                value = self.getChildValue(param)
+                params.append((key, sourceType, value))
 
         return params
 
-
-    def parseProcesses(self):
+    # Not used?
+    def parseProcesses(self): # Also parses 'VariableContainer', 'Transition', 'Start', 'End'
         nodes = []
 
         for i in range(3):

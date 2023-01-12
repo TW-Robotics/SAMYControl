@@ -215,6 +215,9 @@ class SAMYControlInterface():
 
 
     def performIndividualAction(self, action):
+        if action.agentName == "BPMN":
+            print("\n\n Running the action in the controller\n\n")
+            print(action)
         agent = self.agents[action.agentName]
         robotStateText = self.auxClient.get_node( agent.currentStateNodeId ).get_value().Text
         # Giving an agent the skill "pass" we can skip one agent and not perform any action with it. If the robot is not available also skip it
@@ -231,8 +234,13 @@ class SAMYControlInterface():
                     agentSkillParamNode = self.auxClient.get_node( skill.parametersNodesIds[str(parameter.skillParameterName)] )
                     self.smartParameterSetting( agentSkillParamNode, dataBaseNode )
                 elif(parameter.valueType == 'InformationSourceReference'):
+                    print("Printing Parameter of Action with InformationSource \n\n")
+                    print(parameter)
+                    print(skill.parametersNodesIds)
                     informationSourceNode = self.getInformationSourceParameter(parameter.value)
-                    agentSkillParamNode = self.auxClient.get_node( skill.parametersNodesIds[str(int(parameter.skillParameterNumber)-1)] )
+                    agentSkillParamNode = self.auxClient.get_node( skill.parametersNodesIds[str((parameter.skillParameterName))] )
+                    print("InformationSource Node")
+                    print(informationSourceNode)
 ####### HINT: A method for setting agentSkillParamNode (probbably similar to the first lines of smartParameterSetting
                     self.smartParameterSetting( agentSkillParamNode, informationSourceNode )
 
@@ -408,12 +416,12 @@ class SAMYControlInterface():
         value = auxNode.get_value()
         return rootNode.get_child(browsePath)
     
-    def getInformationSourceParameter(self, parameterName):
+    def getInformationSourceParameter(self, parameterName:str, parameterNumber:int = 0):
         rootNode = self.auxClient.get_root_node()
         infoSourceNS = str(self.namespaces['http://SAMY.org/InformationSources'])
         infoSourceBrowseName = infoSourceNS + ':InformationSources'
         paramQualifiedName =  infoSourceNS + ':' + parameterName
-        browsePath = ["0:Objects", infoSourceBrowseName, paramQualifiedName, paramQualifiedName + "_0"] # TODO Add handling of multiple parameters
+        browsePath = ["0:Objects", infoSourceBrowseName, paramQualifiedName, paramQualifiedName + "_" + "0"] 
         auxNode = None
         try:
             auxNode = rootNode.get_child(browsePath) 
